@@ -2,6 +2,8 @@
     Contains some functions to preprocess the data used in the visualisation.
 '''
 import pandas as pd
+import numpy as np 
+
 
 def clean_names(my_df):
     '''
@@ -160,3 +162,31 @@ def group_and_get_means_per_obligation(list_of_keys, my_df):
                                 'Produire_TVQ_à_temps', 'Declarer_TVQ_sans_erreurs', ]
     my_df = my_df.reset_index()
     return my_df
+
+def create_dataset_clustered_barchart(criteres, dataset, radio_fusion = False):
+  for key, value in criteres.items():
+    dataset = dataset[dataset[key] == value]
+
+  formated_dataset = pd.DataFrame({
+      'Obligation' : ['Produire à temps', 'Declarer sans erreurs']*8, 
+
+      'Lois' : [  'IP', 'IP', 
+                  'IC', 'IC',
+                  'RAS', 'RAS',
+                  'TVQ', 'TVQ', 
+                  'IP_P', 'IP_D', 
+                  'IC_P', 'IC_D',
+                  'RAS_P', 'RAS_D',
+                  'TVQ_P', 'TVQ_D'],
+
+      'Valeurs' : np.concatenate([dataset.loc[:, dataset.columns != 'Year'].values[0], dataset.loc[:, dataset.columns != 'Year'].values[0]]),
+
+      'Par obligation' : [ 'Non', 'Non', 'Non', 'Non', 'Non', 'Non', 'Non', 'Non',
+                            'Oui', 'Oui', 'Oui', 'Oui', 'Oui', 'Oui', 'Oui', 'Oui'
+                        ]
+                    })
+  
+  dico = { False:'Non', True:'Oui'}
+  formated_dataset = formated_dataset[formated_dataset['Par obligation'] == dico[radio_fusion]]      
+  return formated_dataset
+

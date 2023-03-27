@@ -13,10 +13,12 @@ import json
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
+from dash.dependencies import Input, Output, State
 
 import pandas as pd
 
 import preprocess
+import clustered_barchart
 
 
 app = dash.Dash(__name__)
@@ -46,22 +48,78 @@ data_whole = preprocess.combine_dfs(data_IC,data_IP)
 data_mean_by_year_and_region = preprocess.group_and_get_means_per_obligation(['Year', 'Region'], data_whole)
 data_sum_by_year_and_region = preprocess.group_and_get_means_per_obligation(['Year', 'Region'], data_whole)
 
-print(data_mean_by_year_and_region)
+data_mean_by_year = preprocess.group_and_get_means_per_obligation(['Year'], data_whole)
 
-fig = None
+data_barchart = preprocess.create_dataset_clustered_barchart({'Year':2014}, data_mean_by_year)
+
+fig = clustered_barchart.init_figure()
+fig = clustered_barchart.draw_clustered_barchart(fig, data_barchart)
+fig.update_layout(height=600, width=1200)
+fig.update_layout(dragmode=False)
 
 app.layout = html.Div(className='content', children=[
     html.Header(children=[
-        html.H1('Analyse des obligations applicables à quatre lois fiscales en vigueur au Québec'),
-        html.H2('Présentation du site')
+        html.H1('Analyse des obligations applicables à quatre lois fiscales en vigueur au Québec', style={'textAlign': 'center'}),
+        html.H2('Présentation du site', style={'textAlign': 'center'})
     ]),
     html.Main(className='viz-container', children=[
-        dcc.Graph(className='graph', figure=fig, config=dict(
-            scrollZoom=False,
-            showTips=False,
-            showAxisDragHandles=False,
-            doubleClick=False,
-            displayModeBar=False
-            ))
-    ])
+                                            dcc.Graph(className='graph', figure=fig, config=dict(
+                                                doubleClick='autoscale'
+                                                ),
+                                                id = 'bar-chart')
+                                            ],
+              style={'display': 'block',
+                    'margin-left': 'auto',
+                    'margin-right': 'auto',
+                    'width': '60%'
+                    }), 
+    html.Footer(children=[
+            html.Div(className='panel', children=[
+                html.Div(id='info', children=[
+                    html.P("Utilisez le bouton pour changer l'affichage", style={'textAlign': 'center'}),
+                    html.P(html.Span('', id='mode')
+                    )
+                ]), 
+                html.Div(children=[
+                    dcc.RadioItems(
+                        id='radio-items',
+                        options=[
+                            dict(
+                                label='Obligations par lois fiscales',
+                                value=False),
+                            dict(
+                                label='Grouper les lois par obligations fiscales',
+                                value=True),
+                        ],
+                        value=False
+                    )
+                ])
+            ])
+        ],
+                style={'textAlign':'center'
+                    })
 ])
+
+@app.callback(
+    [Output('bar-chart', 'figure'), Output('mode', 'children')],
+    [Input('radio-items', 'value')],
+    [State('bar-chart', 'figure')]
+)
+
+def radio_updated(mode, figure):
+    '''
+        Updates the application after the radio input is modified.
+
+        Args:
+            mode: The mode selected in the radio input.
+            figure: The figure as it is currently displayed
+        Returns:
+            fig: The figure to display after the change of radio input
+            mode: The new mode
+    '''
+    fig = clustered_barchart.init_figure()
+    data_barchart = preprocess.create_dataset_clustered_barchart({'Year':2014}, data_mean_by_year, radio_fusion = mode)
+    fig = clustered_barchart.draw_clustered_barchart(fig, data_barchart)
+    fig.update_layout(height=600, width=1200)
+    fig.update_layout(dragmode=False)
+    return fig, mode
