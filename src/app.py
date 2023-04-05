@@ -55,8 +55,8 @@ data_sum_by_year_and_region = preprocess.group_and_get_means_per_obligation(
 data_mean_by_year = preprocess.group_and_get_means_per_obligation([
                                                                   'Year'], data_whole)
 
-data_barchart = preprocess.create_dataset_clustered_barchart(
-    {'Year': 2014}, data_mean_by_year)
+# Preprocess data to create the clustered barchart tab
+data_barchart = preprocess.create_dataset_clustered_barchart({'Year':2014}, data_mean_by_year)
 
 fig = clustered_barchart.init_figure()
 fig = clustered_barchart.draw_clustered_barchart(fig, data_barchart)
