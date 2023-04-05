@@ -13,6 +13,7 @@ import json
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 
 import pandas as pd
@@ -101,8 +102,7 @@ DASHBOARD = html.Div(className="hide",
 
 app.layout = html.Div(className='content', children=[
     html.Header(children=[
-        html.H1('Analyse des obligations applicables à quatre lois fiscales en vigueur au Québec', style={
-                'textAlign': 'center'}),
+        html.H1('Analyse des obligations applicables à quatre lois fiscales en vigueur au Québec'),
         # html.H2('Présentation du site', style={'textAlign': 'center'})
     ]),
     html.Div(id="homepage", className="wrapper", children=[
