@@ -2,7 +2,7 @@
     Contains some functions to preprocess the data used in the visualisation.
 '''
 import pandas as pd
-import numpy as np 
+import numpy as np
 
 
 def clean_names(my_df):
@@ -37,7 +37,7 @@ def convert_types(my_df, IC_or_IP):
 
     my_df['Produire_RAS'] = my_df.loc[:,'Produire_RAS'].astype('Int64')
     my_df['Declarer_RAS'] = my_df.loc[:,'Declarer_RAS'].astype('Int64')
-  
+
     my_df['Produire_TVQ'] = my_df.loc[:,'Produire_TVQ'].astype('Int64')
     my_df['Declarer_TVQ'] = my_df.loc[:,'Declarer_TVQ'].astype('Int64')
     return my_df
@@ -56,23 +56,31 @@ def remove_missing_values(my_df, IC_or_IP):
 
     if IC_or_IP == 'IC':
       # Dans ce cas, si nous sommes dans la configuration contribuable, les valeurs NaN sont de vraies données manquantes
-      my_df = my_df.dropna(subset=['Year', 'Taille', 'Form_juridique', 
-                                   'Region', 'Mode_transmission', 'Produire_RAS', 'Declarer_RAS', 
+      my_df = my_df.dropna(subset=['Year', 'Taille', 'Form_juridique',
+                                   'Region', 'Mode_transmission', 'Produire_RAS', 'Declarer_RAS',
                                    'Declarer_TVQ', 'Produire_TVQ',
                                    'Declarer_IC', 'Produire_IC'])
     elif IC_or_IP == 'IP':
       # Dans ce cas, si nous sommes dans la configuration contribuable, les valeurs NaN sont de vraies données manquantes
 
       # Pour les particuliers, la partie RAS est majoritairement vide, donc on supprime beaucoup trop de données
-      # Peut-être voir si le revenu à la source est démocratisé ou non au Québec, auquel cas il faudra mettre une règle ou combler par des 0 pour dire 
+      # Peut-être voir si le revenu à la source est démocratisé ou non au Québec, auquel cas il faudra mettre une règle ou combler par des 0 pour dire
       # qu'ils ne la déclarent pas (biais)
-      my_df = my_df.dropna(subset=['Year', 'Taille', 'Form_juridique', 
-                                   'Region', 'Mode_transmission', 'Produire_RAS', 'Declarer_RAS', 
+      my_df = my_df.dropna(subset=['Year', 'Taille', 'Form_juridique',
+                                   'Region', 'Mode_transmission', 'Produire_RAS', 'Declarer_RAS',
                                    'Declarer_TVQ', 'Produire_TVQ',
                                    'Declarer_IP', 'Produire_IP'])
+    elif IC_or_IP == None:
+      # Dans ce cas, si nous sommes dans la configuration contribuable, les valeurs NaN sont de vraies données manquantes
+
+      # Pour les particuliers, la partie RAS est majoritairement vide, donc on supprime beaucoup trop de données
+      # Peut-être voir si le revenu à la source est démocratisé ou non au Québec, auquel cas il faudra mettre une règle ou combler par des 0 pour dire
+      # qu'ils ne la déclarent pas (biais)
+      my_df = my_df.dropna(subset=['Year', 'Taille', 'Form_juridique',
+                                   'Region', 'Mode_transmission', 'Produire_RAS', 'Declarer_RAS', 'Declarer_TVQ', 'Produire_TVQ'])
     else:
       raise Exception("Choisir IC ou IP pour les modalités")
-      
+
     print("Lignes après la suppression des valeurs manquantes : ", len(my_df))
 
     return my_df
@@ -127,7 +135,7 @@ def group_and_get_sum_per_obligation(list_of_keys, my_df):
                                                     'Produire_IC': 'sum', 'Declarer_IC': 'sum',
                                                     'Produire_RAS': 'sum', 'Declarer_RAS': 'sum',
                                                     'Produire_TVQ': 'sum', 'Declarer_TVQ': 'sum'})
-    my_df.columns = ['Produire_IP_à_temps', 'Declarer_IP_sans_erreurs', 
+    my_df.columns = ['Produire_IP_à_temps', 'Declarer_IP_sans_erreurs',
                                 'Produire_IC_à_temps', 'Declarer_IC_sans_erreurs',
                                 'Produire_RAS_à_temps', 'Declarer_RAS_sans_erreurs',
                                 'Produire_TVQ_à_temps', 'Declarer_TVQ_sans_erreurs', ]
@@ -156,7 +164,7 @@ def group_and_get_means_per_obligation(list_of_keys, my_df):
                                                     'Produire_IC': 'mean', 'Declarer_IC': 'mean',
                                                     'Produire_RAS': 'mean', 'Declarer_RAS': 'mean',
                                                     'Produire_TVQ': 'mean', 'Declarer_TVQ': 'mean'})
-    my_df.columns = ['Produire_IP_à_temps', 'Declarer_IP_sans_erreurs', 
+    my_df.columns = ['Produire_IP_à_temps', 'Declarer_IP_sans_erreurs',
                                 'Produire_IC_à_temps', 'Declarer_IC_sans_erreurs',
                                 'Produire_RAS_à_temps', 'Declarer_RAS_sans_erreurs',
                                 'Produire_TVQ_à_temps', 'Declarer_TVQ_sans_erreurs', ]
@@ -168,13 +176,13 @@ def create_dataset_clustered_barchart(criteres, dataset, radio_fusion = False):
     dataset = dataset[dataset[key] == value]
 
   formated_dataset = pd.DataFrame({
-      'Obligation' : ['Produire à temps', 'Declarer sans erreurs']*8, 
+      'Obligation' : ['Produire à temps', 'Declarer sans erreurs']*8,
 
-      'Lois' : [  'IP', 'IP', 
+      'Lois' : [  'IP', 'IP',
                   'IC', 'IC',
                   'RAS', 'RAS',
-                  'TVQ', 'TVQ', 
-                  'IP_P', 'IP_D', 
+                  'TVQ', 'TVQ',
+                  'IP_P', 'IP_D',
                   'IC_P', 'IC_D',
                   'RAS_P', 'RAS_D',
                   'TVQ_P', 'TVQ_D'],
@@ -185,8 +193,7 @@ def create_dataset_clustered_barchart(criteres, dataset, radio_fusion = False):
                             'Oui', 'Oui', 'Oui', 'Oui', 'Oui', 'Oui', 'Oui', 'Oui'
                         ]
                     })
-  
-  dico = { False:'Non', True:'Oui'}
-  formated_dataset = formated_dataset[formated_dataset['Par obligation'] == dico[radio_fusion]]      
-  return formated_dataset
 
+  dico = { False:'Non', True:'Oui'}
+  formated_dataset = formated_dataset[formated_dataset['Par obligation'] == dico[radio_fusion]]
+  return formated_dataset

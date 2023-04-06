@@ -3,7 +3,7 @@
 
 '''
     File name: app.py
-    Course: Projet INF8808 - Groupe 10 
+    Course: Projet INF8808 - Groupe 10
     Python Version: 3.8
 
     This file contains the source code for the project.
@@ -26,11 +26,12 @@ app.title = 'Projet | INF8808'
 
 data = pd.read_csv('assets/dataset.csv', delimiter=";", encoding='latin-1')
 
-    
+
 print("Lecture fichier ok")
 
 data_IC = data[data['Form_juridique'] == 'C']
 data_IP = data[data['Form_juridique'] == 'P']
+data_S = data[data['Form_juridique'] == 'S']
 
 data_IC = preprocess.clean_names(data_IC)
 data_IC = preprocess.remove_missing_values(data_IC, 'IC')
@@ -42,9 +43,15 @@ data_IP = preprocess.remove_missing_values(data_IP, 'IP')
 data_IP = preprocess.convert_types(data_IP, 'IP')
 data_IP = preprocess.sort_by_yr(data_IP)
 
-data_whole = preprocess.combine_dfs(data_IC,data_IP)
+data_S = preprocess.clean_names(data_S)
+data_S = preprocess.remove_missing_values(data_S, None)
+data_S = preprocess.convert_types(data_S, None)
+data_S = preprocess.sort_by_yr(data_S)
 
-# Exemple d'application du groupement 
+
+data_whole = preprocess.combine_dfs(data_IC,data_IP, data_S)
+
+# Exemple d'application du groupement
 data_mean_by_year_and_region = preprocess.group_and_get_means_per_obligation(['Year', 'Region'], data_whole)
 data_sum_by_year_and_region = preprocess.group_and_get_means_per_obligation(['Year', 'Region'], data_whole)
 
@@ -72,14 +79,14 @@ app.layout = html.Div(className='content', children=[
                     'margin-left': 'auto',
                     'margin-right': 'auto',
                     'width': '60%'
-                    }), 
+                    }),
     html.Footer(children=[
             html.Div(className='panel', children=[
                 html.Div(id='info', children=[
                     html.P("Utilisez le bouton pour changer l'affichage", style={'textAlign': 'center'}),
                     html.P(html.Span('', id='mode')
                     )
-                ]), 
+                ]),
                 html.Div(children=[
                     dcc.RadioItems(
                         id='radio-items',
