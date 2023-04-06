@@ -1,0 +1,19 @@
+.rose-red {
+    background-color: #C33C54 !important;
+}
+
+.arctic-blue {
+    background-color: #F4FAFF !important;
+}
+
+.white-text {
+    color: white !important
+}
+
+.img-cover {
+    object-fit: cover !important;
+}
+
+.hide {
+    display: none !important;
+}
