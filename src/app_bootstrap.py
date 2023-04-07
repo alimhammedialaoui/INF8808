@@ -488,7 +488,7 @@ BASTA_HTML = html.Div(
         Input("radio-items_4", "value"),
     ],
 )
-def radio_updated(mode, year, forme_juridique, mode_transmission):
+def filter_plot(mode, year, forme_juridique, mode_transmission):
     """
     Updates the application after the radio input is modified.
 
