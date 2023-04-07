@@ -33,6 +33,7 @@ print("Lecture fichier ok")
 
 data_IC = data[data['Form_juridique'] == 'C']
 data_IP = data[data['Form_juridique'] == 'P']
+data_S = data[data['Form_juridique'] == 'S']
 
 data_IC = preprocess.clean_names(data_IC)
 data_IC = preprocess.remove_missing_values(data_IC, 'IC')
@@ -44,8 +45,18 @@ data_IP = preprocess.remove_missing_values(data_IP, 'IP')
 data_IP = preprocess.convert_types(data_IP, 'IP')
 data_IP = preprocess.sort_by_yr(data_IP)
 
+data_S = preprocess.clean_names(data_S)
+data_S = preprocess.remove_missing_values(data_S, None)
+data_S = preprocess.convert_types(data_S, None)
+data_S = preprocess.sort_by_yr(data_S)
+
+
+data_whole = preprocess.combine_dfs(data_IC,data_IP, data_S)
 data_whole = preprocess.combine_dfs(data_IC, data_IP)
 
+# Exemple d'application du groupement
+data_mean_by_year_and_region = preprocess.group_and_get_means_per_obligation(['Year', 'Region'], data_whole)
+data_sum_by_year_and_region = preprocess.group_and_get_means_per_obligation(['Year', 'Region'], data_whole)
 # Exemple d'application du groupement
 data_mean_by_year_and_region = preprocess.group_and_get_means_per_obligation(
     ['Year', 'Region'], data_whole)
@@ -107,7 +118,7 @@ app.layout = html.Div(className='content', children=[
     ]),
     html.Div(id="homepage", className="wrapper", children=[
         html.Div(className="box a rose-red", children=[
-            html.Span("Présentation du fonctionnement de la visalisation et du contexte dans laquelle elle s'inscrit",
+            html.Span("Le projet vise à simplifier l'analyse des données fiscales pour les décideurs de Revenu Québec. En effet, les erreurs de déclaration entraînent des suivis et engendrent des pertes de temps que l'on veut réduire au maximum. L'objectif principal de ce tableau de bord est de rapidement identifier la conformité fiscale d’un groupe d'individus quant à leur capacité à déclarer dans les temps et produire sans erreurs.\n Le tableau de bord propose donc une série de 5 visualisations avec un cadre de contrôle pour explorer les différentes modalités des variables.",
                       className="text white-text")
         ]),
         html.Div(className="box b arctic-blue", children=[

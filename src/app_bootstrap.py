@@ -32,14 +32,24 @@ formes_juridiques = data["Form_juridique"].dropna().unique()
 
 years = list(data["Year"].dropna().unique())
 years = list(map(lambda x: int(x), years))
+years.sort()
 
 modes_transmission = list(data["Mode_transmission"].dropna().unique())
 modes_transmission = list(map(lambda s: s.capitalize(), modes_transmission))
 
-X, Y, Z = [
-    data[data["Form_juridique"] == var].count()["Form_juridique"]
-    for var in list(formes_juridiques)
-]
+liste_contexte = []
+for themes in ["Simplifier l'analyse des données fiscales pour les décideurs de Revenu Québec",
+               "Réduire les pertes de temps de suivi et de traitement dues aux erreurs de déclaration",
+               "Rapidement identifier la conformité fiscale d’un groupe d'individus quant à leur capacité à déclarer dans les temps et produire sans erreurs"]:
+    liste_contexte.append(html.Li(themes))
+
+Particuliers = len(data[data["Form_juridique"] == 'P'].groupby('Num_contribuable').count())
+Entreprises = len(data[data["Form_juridique"] == 'C'].groupby('Num_contribuable').count()) 
+Syndicats = len(data[data["Form_juridique"] == 'S'].groupby('Num_contribuable').count())
+
+Effectif = len(data['Num_contribuable'].unique())
+Timeline = "Données recensées de " + str(int(data['Year'].dropna().unique()[0])) + " à " + str(int(data['Year'].dropna().unique()[-1]))
+Nb_regions = len(data['Region'].unique())
 
 print("Lecture fichier ok")
 
@@ -62,11 +72,12 @@ data_S = preprocess.remove_missing_values(data_S, None)
 data_S = preprocess.convert_types(data_S, None)
 data_S = preprocess.sort_by_yr(data_S)
 
-data_whole = preprocess.combine_dfs(data_IC, data_IP, data_IP)
+data_whole = preprocess.combine_dfs(data_IC, data_IP, data_S)
 
 bubble_chart_pd = yassine_preprocess.bubble_processing(data_whole)
 
 # Exemple d'application du groupement
+
 data_mean_by_year_and_region = preprocess.group_and_get_means_per_obligation(
     ["Year", "Region"], data_whole
 )
@@ -172,8 +183,9 @@ app.layout = html.Div(
                                                     children=[
                                                         html.Div(
                                                             className="card-text",
-                                                            children=[
-                                                                "Présentation du fonctionnement de la visalisation et du contexte dans laquelle elle s'inscrit."
+                                                            children=[html.P("Contexte et objectif : "), html.Ul(liste_contexte),
+                                                            html.P("Le tableau de bord propose donc une série de 5 visualisations avec un cadre de contrôle pour explorer les différentes modalités des variables."),
+                                                                
                                                             ],
                                                         )
                                                     ],
@@ -187,39 +199,64 @@ app.layout = html.Div(
                                                     className="card-body",
                                                     children=[
                                                         html.Div(
+                                                            className="row align-items-center mb-5",
+                                                            children=[
+                                                                html.Div(
+                                                                    className="col-sm-2",
+                                                                    children=[
+                                                                        html.Img(
+                                                                            src="https://img.icons8.com/color/72/null/calendar--v1.png"
+                                                                        )
+                                                                    ],
+                                                                ),
+                                                                html.Div(
+                                                                    className="col-sm-10",
+                                                                    children=[
+                                                                        html.Small(
+                                                                            f"{Timeline}"
+                                                                        )
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        html.Div(
+                                                            className="row align-items-center mb-5",
+                                                            children=[
+                                                                html.Div(
+                                                                    className="col-sm-2",
+                                                                    children=[
+                                                                        html.Img(
+                                                                            src="https://img.icons8.com/color/72/null/conference-call--v1.png"
+                                                                        )
+                                                                    ],
+                                                                ),
+                                                                html.Div(
+                                                                    className="col-sm-10",
+                                                                    children=[
+                                                                        html.Small(
+                                                                            f"{Effectif} contribuables"
+                                                                        )
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        html.Div(
                                                             className="row align-items-center mb-3",
                                                             children=[
                                                                 html.Div(
                                                                     className="col-sm-2",
                                                                     children=[
                                                                         html.Img(
-                                                                            src="https://img.icons8.com/fluency/48/000000/time.png"
+                                                                            src="https://img.icons8.com/office/72/null/country.png"
                                                                         )
                                                                     ],
                                                                 ),
                                                                 html.Div(
                                                                     className="col-sm-10",
                                                                     children=[
-                                                                        "XX déclarations non déclarées à temps"
-                                                                    ],
-                                                                ),
-                                                            ],
-                                                        ),
-                                                        html.Div(
-                                                            className="row align-items-center",
-                                                            children=[
-                                                                html.Div(
-                                                                    className="col-sm-2",
-                                                                    children=[
-                                                                        html.Img(
-                                                                            src="https://img.icons8.com/fluency/48/null/fingerprint-error.png"
+                                                                        html.Small(
+                                                                            f"{Nb_regions} régions différentes"
                                                                         )
-                                                                    ],
-                                                                ),
-                                                                html.Div(
-                                                                    className="col-sm-10",
-                                                                    children=[
-                                                                        "XY déclarations avec des erreurs"
                                                                     ],
                                                                 ),
                                                             ],
@@ -242,7 +279,7 @@ app.layout = html.Div(
                                                     children=[
                                                         html.Div(
                                                             className="card-title",
-                                                            children=["Aperçu"],
+                                                            children=["Effectif détaillé"],
                                                         ),
                                                         html.Div(
                                                             className="row ",
@@ -281,7 +318,7 @@ app.layout = html.Div(
                                                                     className="col-4 text-center",
                                                                     children=[
                                                                         html.Small(
-                                                                            f"{X} particuliers"
+                                                                            f"{Particuliers} particuliers"
                                                                         )
                                                                     ],
                                                                 ),
@@ -289,7 +326,7 @@ app.layout = html.Div(
                                                                     className="col-4 text-center",
                                                                     children=[
                                                                         html.Small(
-                                                                            f"{Y} entreprises"
+                                                                            f"{Entreprises} entreprises"
                                                                         )
                                                                     ],
                                                                 ),
@@ -297,7 +334,7 @@ app.layout = html.Div(
                                                                     className="col-4 text-center",
                                                                     children=[
                                                                         html.Small(
-                                                                            f"{Z} syndicats"
+                                                                            f"{Syndicats} syndicats"
                                                                         )
                                                                     ],
                                                                 ),
@@ -371,7 +408,7 @@ BASTA_HTML = html.Div(
                                     id="radio-items_1",
                                     options=[
                                         {
-                                            "label": "Grouper les lois par obligations fiscales",
+                                            "label": "Grouper les lois par obligations",
                                             "value": True,
                                         },
                                         {
