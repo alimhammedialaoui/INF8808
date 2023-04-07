@@ -6,6 +6,7 @@
 import plotly.graph_objects as go
 import plotly.io as pio
 import plotly.express as px
+import hover_template as hover
 
 def init_figure():
     '''
@@ -42,56 +43,23 @@ def draw_clustered_barchart(fig, data_anim):
     
     fig = px.bar(data_anim, 
                  x=data_anim['Lois'], 
-                 y=data_anim['Valeurs'], 
+                 y=data_anim['Valeurs']*100, 
                  color_discrete_sequence=px.colors.qualitative.Set1,
                  barmode = 'group',
-                 #animation_frame=data_anim['Par obligation'],  
-                 range_y=[0,1], 
+                 range_y=[0,100], 
                  color=data_anim['Obligation'],
                  labels={
-                        "Valeurs": "% de respect de l'obligation",
+                        "Valeurs": "Respect de l'obligation",
                         "Lois": "Lois fiscales",
                         "Obligation": "Obligations fiscales"
                     },
-                 title='Analyse de la TVQ, RAS et IP selon les obligations applicables'
+                 title='Analyse des lois selon les obligations applicables'
                 )
-    fig.update_layout(title_x = 0.5)
+    fig.update_layout(title_x = 0.5, yaxis_title="% de respect de l'obligation")
+    fig.update_traces(hovertemplate = hover.clustered_barchart_hover_template(fig.data[1].x))
     fig['layout']['xaxis'].update(autorange = True)
+    fig.data[1].name = 'Déclarer sans erreurs'
+    for data_trace in fig.data:
+        print(data_trace)
+        #data_trace['hovertemplate'] = hover.map_marker_hover_template(data_trace['name'])
     return fig
-
-
-
-# def update_animation_menu(fig):
-#     '''
-#         Updates the animation menu to show the current year, and to remove
-#         the unnecessary 'Stop' button.
-
-#         Args:
-#             fig: The figure containing the menu to update
-#         Returns
-#             The updated figure
-#     '''
-#     # Remove stop button
-#     fig['layout']['updatemenus'][0]['buttons'] = [fig['layout']['updatemenus'][0]['buttons'][0]]
-
-#     fig['layout']['sliders'][0]['currentvalue']['prefix'] = 'Par obligation : '
-#     fig['layout']['updatemenus'][0]['buttons'][0]['label'] = 'Fusionner'
-#     print("1")
-
-#     return fig
-
-
-# def update_x_axis(fig, mode):
-#     '''
-#         Updates the y axis to say 'Lines (%)' or 'Lines (Count) depending on
-#         the current display.
-
-#         Args:
-#             mode: Current display mode
-#         Returns: 
-#             The updated figure
-#     '''
-#     if mode == 'Avec Fusion':
-#         fig.update_xaxes(
-#             range = [1,8])
-#     return fig
