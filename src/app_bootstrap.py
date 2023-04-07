@@ -14,6 +14,7 @@ import dash_html_components as html
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
+import yassine_preprocess
 
 import pandas as pd
 
@@ -62,6 +63,8 @@ data_S = preprocess.convert_types(data_S, None)
 data_S = preprocess.sort_by_yr(data_S)
 
 data_whole = preprocess.combine_dfs(data_IC, data_IP, data_IP)
+
+bubble_chart_pd = yassine_preprocess.bubble_processing(data_whole)
 
 # Exemple d'application du groupement
 data_mean_by_year_and_region = preprocess.group_and_get_means_per_obligation(
