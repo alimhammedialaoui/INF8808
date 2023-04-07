@@ -1,6 +1,6 @@
 from itertools import combinations
 import numpy as np
-
+import pandas as pd
 
 import math
 
@@ -372,3 +372,11 @@ def bubble_processing(data_pd):
     bublechart_data = bublechart_data.replace(np.nan, 0)
     bublechart_data
     return bublechart_data
+
+
+def filter_bubble_data( df,year,trans,form,region):
+    # apply filter 
+    filtered_df = df[(df['Region'] == region) & (df['Mode_transmission'] == trans) & (df['Year'] == year) & (df['Form_juridique'] == form)]
+    data = list(map(lambda x : (x[0].split("/")[0],x[0].split("/")[1],filtered_df [x].values[0]),list(df.columns)[4:]))
+    dataframe = pd.DataFrame(data,columns=["Declarer","Produire","Ratio"])
+    return dataframe

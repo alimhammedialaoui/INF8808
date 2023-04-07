@@ -15,6 +15,7 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 import yassine_preprocess
+import bubble_chart
 
 import pandas as pd
 
@@ -75,7 +76,8 @@ data_S = preprocess.sort_by_yr(data_S)
 data_whole = preprocess.combine_dfs(data_IC, data_IP, data_S)
 
 bubble_chart_pd = yassine_preprocess.bubble_processing(data_whole)
-
+test_bubble_data = yassine_preprocess.filter_bubble_data(bubble_chart_pd,2014,"Logiciel","C","Abitibi-temiscamingue")
+bubble_chart = bubble_chart.get_plot(test_bubble_data)
 # Exemple d'application du groupement
 
 data_mean_by_year_and_region = preprocess.group_and_get_means_per_obligation(
@@ -389,6 +391,7 @@ app.layout = html.Div(
     ]
 )
 
+YASSINE_HTML = html.Div(dcc.Graph(figure=bubble_chart,id="bubble"))
 
 BASTA_HTML = html.Div(
     className="container",
@@ -527,12 +530,13 @@ def show_plot(n_clicks_1, n_clicks_2):
         return "lead", "hide"
 
 
-@app.callback(Output("graph-display", "children"), [Input("tabs", "value")])
+@app.callback(Output("graph-display", "children"), Input("tabs", "value"))
 def display_graph(value):
     if value == "graph-1":
         return BASTA_HTML
     elif value == "graph-2":
-        return BASTA_HTML
+        print("PLOTTING YASSINE")
+        return YASSINE_HTML
     elif value == "graph-3":
         return BASTA_HTML
     elif value == "graph-4":
