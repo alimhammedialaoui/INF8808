@@ -39,18 +39,31 @@ modes_transmission = list(data["Mode_transmission"].dropna().unique())
 modes_transmission = list(map(lambda s: s.capitalize(), modes_transmission))
 
 liste_contexte = []
-for themes in ["Simplifier l'analyse des données fiscales pour les décideurs de Revenu Québec",
-               "Réduire les pertes de temps de suivi et de traitement dues aux erreurs de déclaration",
-               "Rapidement identifier la conformité fiscale d’un groupe d'individus quant à leur capacité à déclarer dans les temps et produire sans erreurs"]:
+for themes in [
+    "Simplifier l'analyse des données fiscales pour les décideurs de Revenu Québec",
+    "Réduire les pertes de temps de suivi et de traitement dues aux erreurs de déclaration",
+    "Rapidement identifier la conformité fiscale d’un groupe d'individus quant à leur capacité à déclarer dans les temps et produire sans erreurs",
+]:
     liste_contexte.append(html.Li(themes))
 
-Particuliers = len(data[data["Form_juridique"] == 'P'].groupby('Num_contribuable').count())
-Entreprises = len(data[data["Form_juridique"] == 'C'].groupby('Num_contribuable').count()) 
-Syndicats = len(data[data["Form_juridique"] == 'S'].groupby('Num_contribuable').count())
+Particuliers = len(
+    data[data["Form_juridique"] == "P"].groupby("Num_contribuable").count()
+)
+Entreprises = len(
+    data[data["Form_juridique"] == "C"].groupby("Num_contribuable").count()
+)
+Syndicats = len(data[data["Form_juridique"] == "S"].groupby("Num_contribuable").count())
 
-Effectif = len(data['Num_contribuable'].unique())
-Timeline = "Données recensées de " + str(int(data['Year'].dropna().unique()[0])) + " à " + str(int(data['Year'].dropna().unique()[-1]))
-Nb_regions = len(data['Region'].unique())
+Effectif = len(data["Num_contribuable"].unique())
+Timeline = (
+    "Données recensées de "
+    + str(int(data["Year"].dropna().unique()[0]))
+    + " à "
+    + str(int(data["Year"].dropna().unique()[-1]))
+)
+regions = list(data["Region"].dropna().unique())
+regions = list(map(lambda s: s.capitalize(), regions))
+Nb_regions = len(regions)
 
 print("Lecture fichier ok")
 
@@ -76,8 +89,10 @@ data_S = preprocess.sort_by_yr(data_S)
 data_whole = preprocess.combine_dfs(data_IC, data_IP, data_S)
 
 bubble_chart_pd = yassine_preprocess.bubble_processing(data_whole)
-test_bubble_data = yassine_preprocess.filter_bubble_data(bubble_chart_pd,2014,"Logiciel","C","Abitibi-temiscamingue")
-bubble_chart = bubble_chart.get_plot(test_bubble_data)
+bubble_data = yassine_preprocess.filter_bubble_data(
+    bubble_chart_pd, years[0], modes_transmission[0], formes_juridiques[0], regions[0]
+)
+bubble_chart_fig = bubble_chart.get_plot(bubble_data)
 # Exemple d'application du groupement
 
 data_mean_by_year_and_region = preprocess.group_and_get_means_per_obligation(
@@ -109,10 +124,12 @@ data_barchart = preprocess.create_dataset_clustered_barchart(
 
 # print(data_barchart)
 
-fig = clustered_barchart.init_figure()
-fig = clustered_barchart.draw_clustered_barchart(fig, data_barchart)
+clustered_barchart_fig = clustered_barchart.init_figure()
+clustered_barchart_fig = clustered_barchart.draw_clustered_barchart(
+    clustered_barchart_fig, data_barchart
+)
 # fig.update_layout(height=600, width=1200)
-fig.update_layout(dragmode=False)
+clustered_barchart_fig.update_layout(dragmode=False)
 
 
 DASHBOARD = html.Div(
@@ -134,6 +151,11 @@ DASHBOARD = html.Div(
                 dcc.Tabs(
                     id="tabs",
                     value="graph-1",
+                    style={
+                        "font-size": "14px",
+                        "height": "4rem",
+                        "line-height": "1.5rem",
+                    },
                     children=[
                         dcc.Tab(label="Clustered bar chart", value="graph-1"),
                         dcc.Tab(label="Bubble chart", value="graph-2"),
@@ -143,7 +165,7 @@ DASHBOARD = html.Div(
                     ],
                 ),
                 # Zone d'affichage des graphiques
-                html.Div(id="graph-display"),
+                html.Div(id="graph-display", className="mt-5"),
             ]
         )
     ],
@@ -185,9 +207,14 @@ app.layout = html.Div(
                                                     children=[
                                                         html.Div(
                                                             className="card-text",
-                                                            children=[html.P("Contexte et objectif : "), html.Ul(liste_contexte),
-                                                            html.P("Le tableau de bord propose donc une série de 5 visualisations avec un cadre de contrôle pour explorer les différentes modalités des variables."),
-                                                                
+                                                            children=[
+                                                                html.P(
+                                                                    "Contexte et objectif : "
+                                                                ),
+                                                                html.Ul(liste_contexte),
+                                                                html.P(
+                                                                    "Le tableau de bord propose donc une série de 5 visualisations avec un cadre de contrôle pour explorer les différentes modalités des variables."
+                                                                ),
                                                             ],
                                                         )
                                                     ],
@@ -281,7 +308,9 @@ app.layout = html.Div(
                                                     children=[
                                                         html.Div(
                                                             className="card-title",
-                                                            children=["Effectif détaillé"],
+                                                            children=[
+                                                                "Effectif détaillé"
+                                                            ],
                                                         ),
                                                         html.Div(
                                                             className="row ",
@@ -391,128 +420,211 @@ app.layout = html.Div(
     ]
 )
 
-YASSINE_HTML = html.Div(dcc.Graph(figure=bubble_chart,id="bubble"))
 
-BASTA_HTML = html.Div(
-    className="container",
-    children=[
-        html.Div(
-            className="row",
-            children=[
-                html.Div(
-                    className="col-sm-4 p-3",
-                    children=[
-                        html.Label(
-                            htmlFor="radio-items_1", id="mode", children=["Mode"]
-                        ),
-                        html.Div(
-                            children=[
-                                dcc.Dropdown(
-                                    id="radio-items_1",
-                                    options=[
-                                        {
-                                            "label": "Grouper les lois par obligations",
-                                            "value": True,
-                                        },
-                                        {
-                                            "label": "Obligations par lois fiscales",
-                                            "value": False,
-                                        },
-                                    ],
-                                    value=False,
-                                )
-                            ],
-                        ),
-                        html.Label(
-                            htmlFor="radio-items_2", id="annee", children=["Année"]
-                        ),
-                        html.Div(
-                            children=[
-                                dcc.Dropdown(
-                                    id="radio-items_2",
-                                    options=years,
-                                    value=years[0],
-                                )
-                            ],
-                        ),
-                        html.Label(
-                            htmlFor="radio-items_3",
-                            id="forme_juridique",
-                            children=["Forme juridique"],
-                        ),
-                        html.Div(
-                            children=[
-                                dcc.Dropdown(
-                                    id="radio-items_3",
-                                    options=formes_juridiques,
-                                    value=formes_juridiques[0],
-                                )
-                            ],
-                        ),
-                        html.Label(
-                            htmlFor="radio-items_4",
-                            id="transmission",
-                            children=["Transmission"],
-                        ),
-                        html.Div(
-                            children=[
-                                dcc.Dropdown(
-                                    id="radio-items_4",
-                                    options=modes_transmission,
-                                    value=modes_transmission[0],
-                                )
-                            ],
-                        ),
-                    ],
-                ),
-                html.Div(
-                    className="col-sm-8",
-                    children=[
-                        dcc.Graph(
-                            className="graph",
-                            figure=fig,
-                            config=dict(doubleClick="autoscale"),
-                            id="bar-chart",
-                        )
-                    ],
-                ),
-            ],
-        )
-    ],
+def filter_template_1(figure_input, **kwargs):
+    return html.Div(
+        className="container",
+        children=[
+            html.Div(
+                className="row",
+                children=[
+                    html.Div(
+                        className="col-sm-3 d-flex flex-column justify-content-center",
+                        children=[
+                            html.Div(className="mb-3", children=["Filters"]),
+                            html.Div(
+                                className="alabaster p-3",
+                                children=[
+                                    html.Label(
+                                        htmlFor="radio-items_1",
+                                        id="mode",
+                                        children=["Mode"],
+                                        className="font-size-15",
+                                        style={"display": kwargs["mode"]},
+                                    ),
+                                    html.Div(
+                                        children=[
+                                            dcc.Dropdown(
+                                                id="radio-items_1",
+                                                options=[
+                                                    {
+                                                        "label": "Grouper les lois par obligations",
+                                                        "value": True,
+                                                    },
+                                                    {
+                                                        "label": "Obligations par lois fiscales",
+                                                        "value": False,
+                                                    },
+                                                ],
+                                                value=False,
+                                                clearable=False,
+                                                style={
+                                                    "whiteSpace": "nowrap",
+                                                    "fontSize": "14px",
+                                                    "display": kwargs["mode"],
+                                                },
+                                            )
+                                        ],
+                                    ),
+                                    html.Label(
+                                        htmlFor="radio-items_2",
+                                        id="annee",
+                                        children=["Année"],
+                                        className="font-size-15",
+                                        style={"display": kwargs["year"]},
+                                    ),
+                                    html.Div(
+                                        children=[
+                                            dcc.Dropdown(
+                                                id="radio-items_2",
+                                                options=years,
+                                                value=years[0],
+                                                clearable=False,
+                                                style={
+                                                    "whiteSpace": "nowrap",
+                                                    "fontSize": "14px",
+                                                    "display": kwargs["year"],
+                                                },
+                                            )
+                                        ],
+                                    ),
+                                    html.Label(
+                                        htmlFor="radio-items_3",
+                                        id="forme_juridique",
+                                        children=["Forme juridique"],
+                                        className="font-size-15",
+                                        style={"display": kwargs["forme"]},
+                                    ),
+                                    html.Div(
+                                        children=[
+                                            dcc.Dropdown(
+                                                id="radio-items_3",
+                                                options=formes_juridiques,
+                                                value=formes_juridiques[0],
+                                                clearable=False,
+                                                style={
+                                                    "whiteSpace": "nowrap",
+                                                    "fontSize": "14px",
+                                                    "display": kwargs["forme"],
+                                                },
+                                            )
+                                        ],
+                                    ),
+                                    html.Label(
+                                        htmlFor="radio-items_4",
+                                        id="transmission",
+                                        children=["Transmission"],
+                                        className="font-size-15",
+                                        style={"display": kwargs["trans"]},
+                                    ),
+                                    html.Div(
+                                        children=[
+                                            dcc.Dropdown(
+                                                id="radio-items_4",
+                                                options=modes_transmission,
+                                                value=modes_transmission[0],
+                                                clearable=False,
+                                                style={
+                                                    "whiteSpace": "nowrap",
+                                                    "fontSize": "14px",
+                                                    "display": kwargs["trans"],
+                                                },
+                                            )
+                                        ],
+                                    ),
+                                    html.Label(
+                                        htmlFor="radio-items_5",
+                                        id="region",
+                                        children=["Region"],
+                                        className="font-size-15",
+                                        style={"display": kwargs["region"]},
+                                    ),
+                                    html.Div(
+                                        children=[
+                                            dcc.Dropdown(
+                                                id="radio-items_5",
+                                                options=regions,
+                                                value=regions[0],
+                                                clearable=False,
+                                                style={
+                                                    "whiteSpace": "nowrap",
+                                                    "fontSize": "14px",
+                                                    "display": kwargs["region"],
+                                                },
+                                            )
+                                        ],
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                    html.Div(
+                        className="col-sm-9",
+                        children=[
+                            dcc.Graph(
+                                figure=figure_input,
+                                id="out-plot",
+                                config=dict(doubleClick="autoscale"),
+                            )
+                        ],
+                    ),
+                ],
+            )
+        ],
+    )
+
+
+YASSINE_FIG = bubble_chart_fig
+
+BASTA_FIG = clustered_barchart_fig
+
+BASTA_HTML = filter_template_1(
+    BASTA_FIG, mode="", year="", trans="", forme="", region="none"
+)
+YASSINE_HTML = filter_template_1(
+    YASSINE_FIG, mode="none", year="", trans="", forme="", region=""
 )
 
 
 @app.callback(
-    Output("bar-chart", "figure"),
+    Output("out-plot", "figure"),
     [
+        Input("tabs", "value"),
         Input("radio-items_1", "value"),
         Input("radio-items_2", "value"),
         Input("radio-items_3", "value"),
         Input("radio-items_4", "value"),
+        Input("radio-items_5", "value"),
     ],
 )
-def filter_plot(mode, year, forme_juridique, mode_transmission):
+def filter_plot(tab, mode, year, forme_juridique, mode_transmission, region):
     """
-    Updates the application after the radio input is modified.
+    Updates the application after the filter has changed
 
     Args:
-        mode: The mode selected in the radio input.
+        mode: The mode selected.
         figure: The figure as it is currently displayed
     Returns:
         fig: The figure to display after the change of radio input
         mode: The new mode
     """
-    fig = clustered_barchart.init_figure()
-    data_barchart = preprocess.create_dataset_clustered_barchart(
-        {
-            "Year": year,
-            "Form_juridique": forme_juridique,
-            "Mode_transmission": mode_transmission,
-        },
-        data_mean_by_year,
-        radio_fusion=mode,
-    )
-    fig = clustered_barchart.draw_clustered_barchart(fig, data_barchart)
+    if tab == "graph-1":
+        fig = clustered_barchart.init_figure()
+        data_barchart = preprocess.create_dataset_clustered_barchart(
+            {
+                "Year": year,
+                "Form_juridique": forme_juridique,
+                "Mode_transmission": mode_transmission,
+            },
+            data_mean_by_year,
+            radio_fusion=mode,
+        )
+        fig = clustered_barchart.draw_clustered_barchart(fig, data_barchart)
+    elif tab == "graph-2":
+        bubble_data = yassine_preprocess.filter_bubble_data(
+            bubble_chart_pd, year, mode_transmission, forme_juridique, region
+        )
+        fig = bubble_chart.get_plot(bubble_data)
     # fig.update_layout(height=600, width=1200)
     fig.update_layout(dragmode=False)
     return fig
@@ -523,7 +635,7 @@ def filter_plot(mode, year, forme_juridique, mode_transmission):
     [Input("show-dashboard-button", "n_clicks"), Input("previous-button", "n_clicks")],
 )
 def show_plot(n_clicks_1, n_clicks_2):
-    print("Show ", n_clicks_1, ", Previous ", n_clicks_2)
+    # print("Show ", n_clicks_1, ", Previous ", n_clicks_2)
     if n_clicks_1 == n_clicks_2:
         return "hide", "lead"
     else:
@@ -535,7 +647,6 @@ def display_graph(value):
     if value == "graph-1":
         return BASTA_HTML
     elif value == "graph-2":
-        print("PLOTTING YASSINE")
         return YASSINE_HTML
     elif value == "graph-3":
         return BASTA_HTML
@@ -544,7 +655,8 @@ def display_graph(value):
     elif value == "graph-5":
         return BASTA_HTML
 
+
 server = app.server
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run_server(debug=True)
