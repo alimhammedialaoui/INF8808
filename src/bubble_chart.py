@@ -26,8 +26,9 @@ def get_plot(my_df):
                      x='Declarer',
                      y='Produire',
                      size = "Ratio",
-                     text=list(map(lambda n:round(n,2),list(my_df["Ratio"].values)))
+                     title="Analyse en pourcentage de la corrélation entre les indicateurs de déclaration et de production",
+                     text=list(map(lambda n:round(n,2)*100,list(my_df["Ratio"].values)))
                      )
-    fig.update_traces(marker=dict(sizemin=7,color="orange",opacity=1),textposition="middle center")
+    fig.update_traces(marker=dict(sizemin=7,color="orange",opacity=1),textposition="top center")
 
     return fig
