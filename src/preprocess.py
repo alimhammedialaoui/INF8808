@@ -313,7 +313,7 @@ def create_dataset_stacked_barchart(dataset, criteres, obligation='Declarer', in
             dataset = dataset[dataset[key] == value]
     
     dataset = group_and_get_means_per_obligation(['Year', 'Taille'], dataset)
-    
+    print(f"Obligation {obligation}")
     if obligation == 'Declarer':
        column_to_select = "Declarer_" + indicateur + "_sans_erreurs"
     elif obligation == 'Produire':

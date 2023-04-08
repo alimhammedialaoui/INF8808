@@ -16,6 +16,7 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 import yassine_preprocess
 import bubble_chart
+import stacked_barchart
 
 import pandas as pd
 
@@ -131,6 +132,19 @@ clustered_barchart_fig = clustered_barchart.draw_clustered_barchart(
 # fig.update_layout(height=600, width=1200)
 clustered_barchart_fig.update_layout(dragmode=False)
 
+indicateurs = ["TVQ", "RAS", "IC", "IP"]
+obligations = ["Declarer", "Produire"]
+# Preprocess data to create the stacked barchart tab
+data_stacked_bchart = preprocess.create_dataset_stacked_barchart(
+    data_whole,
+    {"Mode_transmission": modes_transmission[0], "Region": regions[0]},
+    obligation=obligations[0],
+    indicateur=indicateurs[0],
+)
+stacked_barchart_fig = stacked_barchart.init_figure()
+stacked_barchart_fig = stacked_barchart.draw_stacked_barchart(
+    stacked_barchart_fig, data_stacked_bchart
+)
 
 DASHBOARD = html.Div(
     className="pb-5 pl-5 pr-5 pt-0",
@@ -554,6 +568,50 @@ def filter_template_1(figure_input, **kwargs):
                                             )
                                         ],
                                     ),
+                                    html.Label(
+                                        htmlFor="radio-items_6",
+                                        id="indicateur",
+                                        children=["Indicateur"],
+                                        className="font-size-15",
+                                        style={"display": kwargs["indicateur"]},
+                                    ),
+                                    html.Div(
+                                        children=[
+                                            dcc.Dropdown(
+                                                id="radio-items_6",
+                                                options=indicateurs,
+                                                value=indicateurs[0],
+                                                clearable=False,
+                                                style={
+                                                    "whiteSpace": "nowrap",
+                                                    "fontSize": "14px",
+                                                    "display": kwargs["indicateur"],
+                                                },
+                                            )
+                                        ],
+                                    ),
+                                    html.Label(
+                                        htmlFor="radio-items_7",
+                                        id="obligation",
+                                        children=["Obligation"],
+                                        className="font-size-15",
+                                        style={"display": kwargs["obligation"]},
+                                    ),
+                                    html.Div(
+                                        children=[
+                                            dcc.Dropdown(
+                                                id="radio-items_7",
+                                                options=obligations,
+                                                value=obligations[0],
+                                                clearable=False,
+                                                style={
+                                                    "whiteSpace": "nowrap",
+                                                    "fontSize": "14px",
+                                                    "display": kwargs["obligation"],
+                                                },
+                                            )
+                                        ],
+                                    ),
                                 ],
                             ),
                         ],
@@ -578,11 +636,38 @@ YASSINE_FIG = bubble_chart_fig
 
 BASTA_FIG = clustered_barchart_fig
 
+PIERRE_FIG = stacked_barchart_fig
+
 BASTA_HTML = filter_template_1(
-    BASTA_FIG, mode="", year="", trans="", forme="", region="none"
+    BASTA_FIG,
+    mode="",
+    year="",
+    trans="",
+    forme="",
+    region="none",
+    obligation="none",
+    indicateur="none",
 )
 YASSINE_HTML = filter_template_1(
-    YASSINE_FIG, mode="none", year="", trans="", forme="", region=""
+    YASSINE_FIG,
+    mode="none",
+    year="",
+    trans="",
+    forme="",
+    region="",
+    obligation="none",
+    indicateur="none",
+)
+
+PIERRE_HTML = filter_template_1(
+    PIERRE_FIG,
+    mode="none",
+    year="none",
+    trans="",
+    forme="",
+    region="none",
+    obligation="",
+    indicateur="",
 )
 
 
@@ -595,9 +680,13 @@ YASSINE_HTML = filter_template_1(
         Input("radio-items_3", "value"),
         Input("radio-items_4", "value"),
         Input("radio-items_5", "value"),
+        Input("radio-items_6", "value"),
+        Input("radio-items_7", "value"),
     ],
 )
-def filter_plot(tab, mode, year, forme_juridique, mode_transmission, region):
+def filter_plot(
+    tab, mode, year, forme_juridique, mode_transmission, region, indicateur, obligation
+):
     """
     Updates the application after the filter has changed
 
@@ -625,6 +714,17 @@ def filter_plot(tab, mode, year, forme_juridique, mode_transmission, region):
             bubble_chart_pd, year, mode_transmission, forme_juridique, region
         )
         fig = bubble_chart.get_plot(bubble_data)
+    elif tab == "graph-4":
+        stacked_data = preprocess.create_dataset_stacked_barchart(
+            data_whole,
+            {"Mode_transmission": mode_transmission, "Region": region},
+            obligation=obligation,
+            indicateur=indicateur,
+        )
+        fig = stacked_barchart.init_figure()
+        fig = stacked_barchart.draw_stacked_barchart(
+            stacked_barchart_fig, stacked_data
+        )
     # fig.update_layout(height=600, width=1200)
     fig.update_layout(dragmode=False)
     return fig
@@ -651,7 +751,7 @@ def display_graph(value):
     elif value == "graph-3":
         return BASTA_HTML
     elif value == "graph-4":
-        return BASTA_HTML
+        return PIERRE_HTML
     elif value == "graph-5":
         return BASTA_HTML
 
