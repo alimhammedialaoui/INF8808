@@ -20,6 +20,7 @@ import pandas as pd
 
 import preprocess
 import clustered_barchart
+import stacked_barchart
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -69,8 +70,13 @@ data_mean_by_year = preprocess.group_and_get_means_per_obligation([
 # Preprocess data to create the clustered barchart tab
 data_barchart = preprocess.create_dataset_clustered_barchart({'Year':2014}, data_mean_by_year)
 
+# Preprocess data to create the stacked barchart tab
+data_stacked_bchart = preprocess.create_dataset_stacked_barchart(data_whole, {'Mode_transmission': 'Logiciel', 'Region': 'Lanaudiere'}, obligation='Declarer', indicateur='TVQ')
+
 fig = clustered_barchart.init_figure()
 fig = clustered_barchart.draw_clustered_barchart(fig, data_barchart)
+#fig = stacked_barchart.init_figure()
+#fig = stacked_barchart.draw_stacked_barchart(fig, data_stacked_bchart)
 fig.update_layout(height=600, width=1200)
 fig.update_layout(dragmode=False)
 
@@ -208,7 +214,7 @@ BASTA_HTML = html.Main(className='viz-container', children=[
 def radio_updated(mode, figure):
     '''
         Updates the application after the radio input is modified.
-
+    
         Args:
             mode: The mode selected in the radio input.
             figure: The figure as it is currently displayed

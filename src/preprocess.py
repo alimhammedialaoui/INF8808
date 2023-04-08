@@ -305,3 +305,24 @@ def create_dataset_clustered_barchart(criteres, dataset, radio_fusion=False):
         formated_dataset["Par obligation"] == dico[radio_fusion]
     ]
     return formated_dataset
+
+def create_dataset_stacked_barchart(dataset, criteres, obligation='Declarer', indicateur='TVQ'):
+    dataset = dataset[dataset['Form_juridique'] == 'C'] # Only keep rows corresponding to corporations
+    for key, value in criteres.items():
+        if value != 'all':
+            dataset = dataset[dataset[key] == value]
+    
+    dataset = group_and_get_means_per_obligation(['Year', 'Taille'], dataset)
+    
+    if obligation == 'Declarer':
+       column_to_select = "Declarer_" + indicateur + "_sans_erreurs"
+    elif obligation == 'Produire':
+       column_to_select = "Produire_" + indicateur + "_à_temps"
+    else:
+       raise(Exception)
+    
+    dataset = dataset[["Year", "Taille", column_to_select]]
+    dataset["Loi"] = column_to_select
+    dataset = dataset.rename(columns={column_to_select: "Valeurs"})
+    print(dataset)
+    return dataset
