@@ -326,3 +326,20 @@ def create_dataset_stacked_barchart(dataset, criteres, obligation='Declarer', in
     dataset = dataset.rename(columns={column_to_select: "Valeurs"})
     print(dataset)
     return dataset
+
+def filter_line_chart_df(my_df,region,obligation,indicateur,transmission):
+   my_df = my_df[(my_df['Region'] == region) 
+                     & (my_df['Mode_transmission'] == transmission)]
+   my_df = my_df.groupby(["Year","Form_juridique"]).agg({'Produire_IP': 'mean', 'Declarer_IP': 'mean',
+                                                    'Produire_IC': 'mean', 'Declarer_IC': 'mean',
+                                                    'Produire_RAS': 'mean', 'Declarer_RAS': 'mean',
+                                                    'Produire_TVQ': 'mean', 'Declarer_TVQ': 'mean'}).reset_index()
+   if obligation == 'Declarer':
+      column_to_select = "Declarer_" + indicateur
+   elif obligation == 'Produire':
+      column_to_select = "Produire_" + indicateur
+   else:
+      raise(Exception)
+   my_df = my_df[["Year", "Form_juridique", column_to_select]]
+   my_df = my_df.rename(columns={column_to_select: "Valeurs"})
+   return my_df

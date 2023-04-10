@@ -17,6 +17,7 @@ from dash.dependencies import Input, Output, State
 import yassine_preprocess
 import bubble_chart
 import stacked_barchart
+import linear_graph
 
 import pandas as pd
 
@@ -145,6 +146,13 @@ stacked_barchart_fig = stacked_barchart.init_figure()
 stacked_barchart_fig = stacked_barchart.draw_stacked_barchart(
     stacked_barchart_fig, data_stacked_bchart
 )
+
+# Preprocess data to create the line chart figure
+line_chart_data = preprocess.filter_line_chart_df(
+    data_whole, regions[0], obligations[0], indicateurs[0], modes_transmission[0]
+)
+
+line_chart_fig = linear_graph.get_line_chart_figure(line_chart_data)
 
 DASHBOARD = html.Div(
     className="pb-5 pl-5 pr-5 pt-0",
@@ -638,6 +646,8 @@ BASTA_FIG = clustered_barchart_fig
 
 PIERRE_FIG = stacked_barchart_fig
 
+UGO_FIG = line_chart_fig
+
 BASTA_HTML = filter_template_1(
     BASTA_FIG,
     mode="",
@@ -666,6 +676,17 @@ PIERRE_HTML = filter_template_1(
     trans="",
     forme="",
     region="none",
+    obligation="",
+    indicateur="",
+)
+
+UGO_HTML = filter_template_1(
+    UGO_FIG,
+    mode="none",
+    year="none",
+    trans="",
+    forme="none",
+    region="",
     obligation="",
     indicateur="",
 )
@@ -722,9 +743,13 @@ def filter_plot(
             indicateur=indicateur,
         )
         fig = stacked_barchart.init_figure()
-        fig = stacked_barchart.draw_stacked_barchart(
-            stacked_barchart_fig, stacked_data
+        fig = stacked_barchart.draw_stacked_barchart(stacked_barchart_fig, stacked_data)
+    elif tab=="graph-5":
+        line_chart_data = preprocess.filter_line_chart_df(
+            data_whole, region, obligation, indicateur, mode_transmission
         )
+
+        fig = linear_graph.get_line_chart_figure(line_chart_data)
     # fig.update_layout(height=600, width=1200)
     fig.update_layout(dragmode=False)
     return fig
@@ -753,7 +778,7 @@ def display_graph(value):
     elif value == "graph-4":
         return PIERRE_HTML
     elif value == "graph-5":
-        return BASTA_HTML
+        return UGO_HTML
 
 
 server = app.server
