@@ -6,6 +6,8 @@
 import plotly.graph_objects as go
 import plotly.io as pio
 import plotly.express as px
+import hover_template as hover
+
 
 def init_figure():
     '''
@@ -49,4 +51,7 @@ def draw_stacked_barchart(fig, data):
                         "Year": "Année",
                     },
                 )
+    
+    fig.update_traces(hovertemplate = hover.stacked_barchart_hover_template())
+
     return fig
