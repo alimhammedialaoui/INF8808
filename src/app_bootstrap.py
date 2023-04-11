@@ -679,8 +679,8 @@ PIERRE_HTML = filter_template_1(
     mode="none",
     year="none",
     trans="",
-    forme="",
-    region="none",
+    forme="none",
+    region="",
     obligation="",
     indicateur="",
 )
