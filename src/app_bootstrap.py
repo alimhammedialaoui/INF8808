@@ -21,6 +21,7 @@ import pandas as pd
 
 import preprocess
 import clustered_barchart
+import stacked_barchart
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 
@@ -37,6 +38,10 @@ years.sort()
 
 modes_transmission = list(data["Mode_transmission"].dropna().unique())
 modes_transmission = list(map(lambda s: s.capitalize(), modes_transmission))
+
+regions = list(data["Region"].dropna().unique())
+regions = ["ALL"] + list(map(lambda s: s.replace("-", " "), regions))
+
 
 liste_contexte = []
 for themes in ["Simplifier l'analyse des données fiscales pour les décideurs de Revenu Québec",
@@ -113,6 +118,12 @@ fig = clustered_barchart.init_figure()
 fig = clustered_barchart.draw_clustered_barchart(fig, data_barchart)
 # fig.update_layout(height=600, width=1200)
 fig.update_layout(dragmode=False)
+
+### Create data and init chart for Stacked Barchart
+data_stacked_bchart = preprocess.create_dataset_stacked_barchart(data_whole, {'Mode_transmission': modes_transmission[0], 'Region': regions[0]}, obligation='Declarer', indicateur='TVQ')
+
+s_bchart = stacked_barchart.init_figure()
+s_bchart = stacked_barchart.draw_stacked_barchart(s_bchart, data_stacked_bchart)
 
 
 DASHBOARD = html.Div(
@@ -481,6 +492,61 @@ BASTA_HTML = html.Div(
     ],
 )
 
+RAKOT_HTML = html.Div(
+    className="container",
+    children=[
+        html.Div(
+            className="row",
+            children=[
+                html.Div(
+                    className="col-sm-4 p-3",
+                    children=[
+                        html.Label(
+                            htmlFor="radio-items_1",
+                            id="transmission",
+                            children=["Transmission"],
+                        ),
+                        html.Div(
+                            children=[
+                                dcc.Dropdown(
+                                    id="radio-items_1",
+                                    options=modes_transmission,
+                                    value=modes_transmission[0],
+                                )
+                            ],
+                        ),
+                        html.Label(
+                            htmlFor="radio-items_2",
+                            id="region",
+                            children=["Region"],
+                        ),
+                        html.Div(
+                            children=[
+                                dcc.Dropdown(
+                                    id="radio-items_2",
+                                    options=regions,
+                                    value=regions[0],
+                                )
+                            ],
+                        )
+                    ],
+                ),
+                html.Div(
+                    className="col-sm-8",
+                    children=[
+                        dcc.Graph(
+                            className="graph",
+                            figure=s_bchart,
+                            config=dict(doubleClick="autoscale"),
+                            id="bar-chart",
+                        )
+                    ],
+                ),
+            ],
+        )
+    ],
+)
+
 
 @app.callback(
     Output("bar-chart", "figure"),
@@ -540,7 +606,7 @@ def display_graph(value):
     elif value == "graph-3":
         return BASTA_HTML
     elif value == "graph-4":
-        return BASTA_HTML
+        return RAKOT_HTML
     elif value == "graph-5":
         return BASTA_HTML
 
