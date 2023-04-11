@@ -38,6 +38,15 @@ def draw_stacked_barchart(fig, data):
             fig: The figure comprising the drawn bar chart
     '''
     fig = go.Figure(fig)  # conversion back to Graph Object
-    
-    fig = px.bar(data, x ="Year", y = "Valeurs", color="Taille")
+    data["Valeurs"] = data["Valeurs"]*100
+    fig = px.bar(data,
+                 x ="Year",
+                 y = "Valeurs",
+                 range_y=[0, 100],
+                 color="Taille",
+                 labels={
+                        "Valeurs": "% de Respect de l'obligation",
+                        "Year": "Année",
+                    },
+                )
     return fig
