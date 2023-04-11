@@ -200,7 +200,7 @@ app.layout = html.Div(
         html.Div(
             className="jumbotron",
             children=[
-                html.H1(className="display-4", children=["Revenu Quebéc"]),
+                html.H1(className="display-4", children=["Revenu Québec"]),
                 html.P(
                     className="lead",
                     children=[
