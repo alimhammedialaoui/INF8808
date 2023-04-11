@@ -41,9 +41,6 @@ years.sort()
 modes_transmission = list(data["Mode_transmission"].dropna().unique())
 modes_transmission = list(map(lambda s: s.capitalize(), modes_transmission))
 
-regions = list(data["Region"].dropna().unique())
-regions = ["ALL"] + list(map(lambda s: s.replace("-", " "), regions))
-
 
 liste_contexte = []
 for themes in [
