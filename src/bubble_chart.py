@@ -1,4 +1,5 @@
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 import hover_template as hover
 
@@ -27,36 +28,75 @@ def get_plot(my_df):
     df_temp2 = my_df.copy()
     df_temp1.insert(3, "Default", ["No"] * len(my_df["Ratio"]))
     df_temp2.insert(3, "Default", ["Yes"] * len(my_df["Ratio"]))
-    df_whole = pd.concat([df_temp1, df_temp2], ignore_index=True)
-    df_whole.loc[df_whole["Default"] == "Yes", ["Ratio"]] = 1
-    
+    # df_whole = pd.concat([df_temp1, df_temp2], ignore_index=True)
+    # df_whole.loc[df_whole["Default"] == "Yes", ["Ratio"]] = 1
+    df_temp1.loc[df_temp1["Default"] == "Yes", ["Ratio"]] = 1
+    df_temp2.loc[df_temp2["Default"] == "Yes", ["Ratio"]] = 1
+
     fig = px.scatter(
-        df_whole,
+        df_temp1,
         x="Declarer",
         y="Produire",
         size="Ratio",
         text=list(
             map(
                 lambda n: "{:.2f}%".format(round(n, 2) * 100),
-                list(df_whole["Ratio"].values),
+                list(df_temp1["Ratio"].values),
             )
         ),
         labels={"Declarer": "Déclarer sans erreurs", "Produire": "Produire à temps"},
         title="Analyse (en %) de la corrélation entre les indicateurs de déclaration et de production",
+        size_max=40,
     )
+    fig.update_traces(name="Scatter 1")
     # a = [1] * len(my_df["Ratio"]) + [0.1] * len(my_df["Ratio"])
     # print(len(a))
     # print(a)
+    trace_2 = go.Scatter(
+            x=df_temp2["Declarer"],
+            y=df_temp2["Produire"],
+            mode="markers",
+            marker=dict(
+                size=df_temp2["Ratio"] * 100*0.6,
+                sizemode="diameter",
+            ),
+            text=[f"{n:.2f}%" for n in df_temp2["Ratio"] * 100],
+            name ="Scatter 2",
+            showlegend=False
+        )
+    fig.add_trace(trace_2)
+
     fig.update_traces(
         marker=dict(
             sizemin=7,
+            size=df_temp1["Ratio"] * 0.40,
             color=px.colors.qualitative.Set1[0],
-            opacity=[1]*len(my_df["Ratio"]) + [0.1]*len(my_df["Ratio"]),
-
+            opacity=[1] * len(my_df["Ratio"]) + [0.1] * len(my_df["Ratio"]),
         ),
         textposition="top center",
+        selector = dict(name="Scatter 1")
     )
+    fig.update_traces(
+        marker=dict(
+            color=px.colors.qualitative.Set1[0],
+            opacity=[0.5] * len(my_df["Ratio"]) + [0.00] * len(my_df["Ratio"]),
+        ),
+        selector = dict(name="Scatter 2")
+    )
+
+    # fig.update_traces(
+    #     marker=dict(
+    #         sizemin=7,
+    #         color=px.colors.qualitative.Set1[0],
+    #         opacity=[1] * len(my_df["Ratio"]) + [0.1] * len(my_df["Ratio"]),
+    #     ),
+    #     textposition="top center",
+    #     selector = dict(name="Scatter 1")
+    # )
     fig.update_traces(hovertemplate=hover.bubblechart_hover_template())
+    fig.data = [fig.data[1], fig.data[0]]
+
+
     fig.update_layout(
         xaxis=dict(
             tickmode="linear",  # Set tick mode to linear
