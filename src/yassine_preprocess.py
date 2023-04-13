@@ -6,37 +6,27 @@ import math
 
 
 def bubble_processing(data_pd,year,region,trans):
-    if region =="ALL" and trans =="ALL" and year =="ALL":
-        # Trans and Region and year n est pas selectionnee.
-        grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique']).agg({"Produire_IP": ["sum", "count"]}).reset_index()
-        grouped_data = grouped_data
-    elif year =="ALL" and region =="ALL":
-        # Year and Region n est pas selectionnee.
-        grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique',"Mode_transmission"]).agg({"Produire_IP": ["sum", "count"]}).reset_index()
-        grouped_data = grouped_data[(data_pd['Mode_transmission'] == trans)]
-    elif year =="ALL" and trans =="ALL":
-        # Year and Trans n est pas selectionnee.
-        grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique',"Region"]).agg({"Produire_IP": ["sum", "count"]}).reset_index()
-        grouped_data = grouped_data[(grouped_data['Region'] == region)]
-    elif region =="ALL" and trans =="ALL":
-        # Trans and Region n est pas selectionnee.
-        grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique',"Year"]).agg({"Produire_IP": ["sum", "count"]}).reset_index()
-        grouped_data = grouped_data[(grouped_data['Year'] == year)]
-    elif year =="ALL":
-        # Year n est pas selectionnee.
-        grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique',"Region","Mode_transmission"]).agg({"Produire_IP": ["sum", "count"]}).reset_index()
-        grouped_data = grouped_data[(grouped_data['Region'] == region) & (data_pd['Mode_transmission'] == trans)]
-    elif region =="ALL":
-        # Region n est pas selectionnee.
-        grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique',"Year","Mode_transmission"]).agg({"Produire_IP": ["sum", "count"]}).reset_index()
-        grouped_data = grouped_data[(grouped_data['Year'] == year) & (data_pd['Mode_transmission'] == trans)]
-    elif trans =="ALL":
-        # Mode_transmission n est pas selectionnee.
-        grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique',"Year","Region"]).agg({"Produire_IP": ["sum", "count"]}).reset_index()
-        grouped_data = grouped_data[(grouped_data['Year'] == year) & (data_pd['Region'] == region)]
-    else:
-        grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique',"Region","Year","Mode_transmission"]).agg({"Produire_IP": ["sum", "count"]}).reset_index()
-        grouped_data = grouped_data[(data_pd['Mode_transmission'] == trans) & (grouped_data['Year'] == year) &  (grouped_data['Region'] == region)]
+    # Filter data where Declarer_RAS is 1
+    filtered_data = data_pd[data_pd["Declarer_RAS"] == 1]
+
+    # Group the filtered data based on selected variables
+    group_cols = ['Form_juridique']
+    if region != "ALL":
+        group_cols.append('Region')
+    if trans != "ALL":
+        group_cols.append('Mode_transmission')
+    if year != "ALL":
+        group_cols.append('Year')
+
+    grouped_data = filtered_data.groupby(group_cols).agg({"Produire_IP": ["sum", "count"]}).reset_index()
+
+    # Filter the grouped data based on selected variable values
+    if region != "ALL":
+        grouped_data = grouped_data[grouped_data['Region'] == region]
+    if trans != "ALL":
+        grouped_data = grouped_data[grouped_data['Mode_transmission'] == trans]
+    if year != "ALL":
+        grouped_data = grouped_data[grouped_data['Year'] == year]
     ############################ Declarer RAS #########################################
  
 
@@ -249,6 +239,6 @@ def bubble_processing(data_pd,year,region,trans):
 def filter_bubble_data(df,year,trans,form,region):
     ts = bubble_processing(df,year,region,trans)
     filtered_df = ts[(ts['Form_juridique'] == form)]
-    data = list(map(lambda x : (x[0].split("/")[0],x[0].split("/")[1],filtered_df [x].values[0]),list(filtered_df.columns)[4:]))
+    data = list(map(lambda x : (x[0].split("/")[0],x[0].split("/")[1],filtered_df [x].values[0]),list(filtered_df.columns)[1:]))
     dataframe = pd.DataFrame(data,columns=["Declarer","Produire","Ratio"])
     return dataframe
