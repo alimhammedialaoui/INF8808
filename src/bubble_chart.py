@@ -29,19 +29,16 @@ def get_plot(my_df):
     df_temp2.insert(3, "Default", ["Yes"] * len(my_df["Ratio"]))
     df_whole = pd.concat([df_temp1, df_temp2], ignore_index=True)
     df_whole.loc[df_whole["Default"] == "Yes", ["Ratio"]] = 1
-    df_whole = df_whole.drop(["Default"], axis=1)
-
-    print(df_whole)
-
+    
     fig = px.scatter(
-        my_df,
+        df_whole,
         x="Declarer",
         y="Produire",
         size="Ratio",
         text=list(
             map(
                 lambda n: "{:.2f}%".format(round(n, 2) * 100),
-                list(my_df["Ratio"].values),
+                list(df_whole["Ratio"].values),
             )
         ),
         labels={"Declarer": "Déclarer sans erreurs", "Produire": "Produire à temps"},
@@ -54,8 +51,9 @@ def get_plot(my_df):
         marker=dict(
             sizemin=7,
             color=px.colors.qualitative.Set1[0],
+            opacity=[1]*len(my_df["Ratio"]) + [0.1]*len(my_df["Ratio"]),
+
         ),
-        # opacity=[1]*len(my_df["Ratio"]) + [0.4]*len(my_df["Ratio"])),
         textposition="top center",
     )
     fig.update_traces(hovertemplate=hover.bubblechart_hover_template())
