@@ -37,11 +37,11 @@ formes_juridiques = data["Form_juridique"].dropna().unique()
 years = list(data["Year"].dropna().unique())
 years = list(map(lambda x: int(x), years))
 years.sort()
-years.insert(0,"Tout")
+years.insert(0,"ALL")
 
 modes_transmission = list(data["Mode_transmission"].dropna().unique())
 modes_transmission = list(map(lambda s: s.capitalize(), modes_transmission))
-modes_transmission.insert(0,"Tout")
+modes_transmission.insert(0,"ALL")
 
 
 liste_contexte = []
@@ -69,7 +69,7 @@ Timeline = (
 )
 regions = list(data["Region"].dropna().unique())
 regions = list(map(lambda s: s.capitalize(), regions))
-regions.insert(0,"Tout")
+regions.insert(0,"ALL")
 Nb_regions = len(regions)
 
 print("Lecture fichier ok")

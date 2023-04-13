@@ -319,7 +319,6 @@ def create_dataset_stacked_barchart(dataset, criteres, obligation='Declarer', in
     nmb_of_companies = dataset.groupby(['Year']).agg({column_to_select: 'size'}).add_suffix('_Tot')
     dataset = nmb_of_ones.join(nmb_of_companies, on="Year")
     dataset["Valeurs"] = dataset[column_to_select] / dataset[column_to_select + "_Tot"]
-    print(dataset)
 
     return dataset
 

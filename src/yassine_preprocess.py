@@ -6,31 +6,31 @@ import math
 
 
 def bubble_processing(data_pd,year,region,trans):
-    if region =="Tout" and trans =="Tout" and year =="Tout":
+    if region =="ALL" and trans =="ALL" and year =="ALL":
         # Trans and Region and year n est pas selectionnee.
         grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique']).agg({"Produire_IP": ["sum", "count"]}).reset_index()
         grouped_data = grouped_data
-    elif year =="Tout" and region =="Tout":
+    elif year =="ALL" and region =="ALL":
         # Year and Region n est pas selectionnee.
         grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique',"Mode_transmission"]).agg({"Produire_IP": ["sum", "count"]}).reset_index()
         grouped_data = grouped_data[(data_pd['Mode_transmission'] == trans)]
-    elif year =="Tout" and trans =="Tout":
+    elif year =="ALL" and trans =="ALL":
         # Year and Trans n est pas selectionnee.
         grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique',"Region"]).agg({"Produire_IP": ["sum", "count"]}).reset_index()
         grouped_data = grouped_data[(grouped_data['Region'] == region)]
-    elif region =="Tout" and trans =="Tout":
+    elif region =="ALL" and trans =="ALL":
         # Trans and Region n est pas selectionnee.
         grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique',"Year"]).agg({"Produire_IP": ["sum", "count"]}).reset_index()
         grouped_data = grouped_data[(grouped_data['Year'] == year)]
-    elif year =="Tout":
+    elif year =="ALL":
         # Year n est pas selectionnee.
         grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique',"Region","Mode_transmission"]).agg({"Produire_IP": ["sum", "count"]}).reset_index()
         grouped_data = grouped_data[(grouped_data['Region'] == region) & (data_pd['Mode_transmission'] == trans)]
-    elif region =="Tout":
+    elif region =="ALL":
         # Region n est pas selectionnee.
         grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique',"Year","Mode_transmission"]).agg({"Produire_IP": ["sum", "count"]}).reset_index()
         grouped_data = grouped_data[(grouped_data['Year'] == year) & (data_pd['Mode_transmission'] == trans)]
-    elif trans =="Tout":
+    elif trans =="ALL":
         # Mode_transmission n est pas selectionnee.
         grouped_data =  data_pd[ data_pd["Declarer_RAS"] == 1].groupby(['Form_juridique',"Year","Region"]).agg({"Produire_IP": ["sum", "count"]}).reset_index()
         grouped_data = grouped_data[(grouped_data['Year'] == year) & (data_pd['Region'] == region)]
