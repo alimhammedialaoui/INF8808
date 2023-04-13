@@ -239,6 +239,7 @@ def bubble_processing(data_pd,year,region,trans):
 def filter_bubble_data(df,year,trans,form,region):
     ts = bubble_processing(df,year,region,trans)
     filtered_df = ts[(ts['Form_juridique'] == form)]
-    data = list(map(lambda x : (x[0].split("/")[0],x[0].split("/")[1],filtered_df [x].values[0]),list(filtered_df.columns)[1:]))
+    index = next((i for i, (word,_) in enumerate(list(filtered_df.columns)) if word.startswith("Declarer")), None)
+    data = list(map(lambda x : (x[0].split("/")[0],x[0].split("/")[1],filtered_df [x].values[0]),list(filtered_df.columns)[index:]))
     dataframe = pd.DataFrame(data,columns=["Declarer","Produire","Ratio"])
     return dataframe
