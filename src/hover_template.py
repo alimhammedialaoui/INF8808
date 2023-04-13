@@ -29,3 +29,13 @@ def clustered_barchart_hover_template(laws):
     value2 = '<span style="font-family:Oswald">' + ' %{y:.2f} % <br>' 
     
     return label1 + value1 + label2 + value2 + '<extra></extra>'
+
+
+def stacked_barchart_hover_template():
+    label1 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Année : " '</span>'
+    value1 = '<span style="font-family:Oswald">' + '%{x}' + '<br>' 
+
+    label2 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Taux de respect : " '</span>'
+    value2 = '<span style="font-family:Oswald">' + ' %{y:.2f} % <br>' 
+
+    return label1 + value1 + label2 + value2 + '<extra></extra>'

@@ -23,6 +23,7 @@ import pandas as pd
 import numpy as np
 import preprocess
 import clustered_barchart
+import stacked_barchart
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 
@@ -41,6 +42,7 @@ years.insert(0,"Tout")
 modes_transmission = list(data["Mode_transmission"].dropna().unique())
 modes_transmission = list(map(lambda s: s.capitalize(), modes_transmission))
 modes_transmission.insert(0,"Tout")
+
 
 liste_contexte = []
 for themes in [
@@ -201,7 +203,7 @@ app.layout = html.Div(
         html.Div(
             className="jumbotron",
             children=[
-                html.H1(className="display-4", children=["Revenu Quebéc"]),
+                html.H1(className="display-4", children=["Revenu Québec"]),
                 html.P(
                     className="lead",
                     children=[
@@ -677,8 +679,8 @@ PIERRE_HTML = filter_template_1(
     mode="none",
     year="none",
     trans="",
-    forme="",
-    region="none",
+    forme="none",
+    region="",
     obligation="",
     indicateur="",
 )
