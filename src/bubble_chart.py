@@ -59,5 +59,16 @@ def get_plot(my_df):
         textposition="top center",
     )
     fig.update_traces(hovertemplate=hover.bubblechart_hover_template())
-
+    fig.update_layout(
+        xaxis=dict(
+            tickmode="linear",  # Set tick mode to linear
+            dtick=0.5,  # Set the interval between ticks to 0.5
+        ),
+        yaxis=dict(
+            tickmode="linear",  # Set tick mode to linear
+            dtick=0.1,  # Set the interval between ticks to 0.5
+        ),
+        width=800,  # Set the width of the chart to 800 pixels
+        height=600,  # Set the height of the chart to 600 pixels
+    )
     return fig
