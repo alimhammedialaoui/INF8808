@@ -47,11 +47,14 @@ def draw_stacked_barchart(fig, data):
                  range_y=[0, 100],
                  color="Taille",
                  labels={
-                        "Valeurs": "% de Respect de l'obligation",
-                        "Year": "Année",
+                        "Valeurs": "% de respect de l'obligation",
+                        "Year": "Années",
+                        'Taille': "Taille de l'entreprise"
                     },
+                 title = "Évolution sur la complétion des déclarations par type d'entreprise",
+                 color_discrete_sequence=px.colors.qualitative.Set1
                 )
-    
+    fig.update_layout(title_x = 0.5)
     fig.update_traces(hovertemplate = hover.stacked_barchart_hover_template())
 
     return fig

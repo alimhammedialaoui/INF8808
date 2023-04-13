@@ -248,8 +248,16 @@ def group_and_get_means_per_obligation(list_of_keys, my_df):
 
 def create_dataset_clustered_barchart(criteres, dataset, radio_fusion=False):
     for key, value in criteres.items():
-        dataset = dataset[dataset[key] == value]
+        if value != 'ALL':
+            dataset = dataset[dataset[key] == value]
     cols_to_select = ~dataset.columns.isin(list(criteres.keys()))
+    
+    # To compute the mean over the unaggregated dataset
+    for key, value in criteres.items():
+        if value == 'ALL':
+            for col, boolean in zip(dataset.columns, cols_to_select):
+                if boolean == True:
+                    dataset[col] = dataset[col].mean()
     formated_dataset = pd.DataFrame(
         {
             "Obligation": ["Produire à temps", "Declarer sans erreurs"] * 8,
@@ -304,6 +312,7 @@ def create_dataset_clustered_barchart(criteres, dataset, radio_fusion=False):
     formated_dataset = formated_dataset[
         formated_dataset["Par obligation"] == dico[radio_fusion]
     ]
+
     return formated_dataset
 
 def create_dataset_stacked_barchart(dataset, criteres, obligation='Declarer', indicateur='TVQ'):
@@ -323,8 +332,15 @@ def create_dataset_stacked_barchart(dataset, criteres, obligation='Declarer', in
     return dataset
 
 def filter_line_chart_df(my_df,region,obligation,indicateur,transmission):
-   my_df = my_df[(my_df['Region'] == region) 
-                     & (my_df['Mode_transmission'] == transmission)]
+   if region == 'ALL' and transmission != 'ALL':
+       my_df = my_df[my_df['Mode_transmission'] == transmission]
+   elif transmission == 'ALL' and region != 'ALL':
+       my_df = my_df[(my_df['Region'] == region)]
+   elif region != 'ALL' and transmission != 'ALL':
+       my_df = my_df[(my_df['Region'] == region) 
+                        & (my_df['Mode_transmission'] == transmission)]
+   else:
+       my_df = my_df 
    my_df = my_df.groupby(["Year","Form_juridique"]).agg({'Produire_IP': 'mean', 'Declarer_IP': 'mean',
                                                     'Produire_IC': 'mean', 'Declarer_IC': 'mean',
                                                     'Produire_RAS': 'mean', 'Declarer_RAS': 'mean',
