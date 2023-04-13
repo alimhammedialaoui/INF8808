@@ -35,6 +35,7 @@ def get_plot(my_df):
         x="Declarer",
         y="Produire",
         size="Ratio",
+        size_max=25,
         text=list(
             map(
                 lambda n: "{:.2f}%".format(round(n, 2) * 100),
@@ -44,12 +45,10 @@ def get_plot(my_df):
         labels={"Declarer": "Déclarer sans erreurs", "Produire": "Produire à temps"},
         title="Analyse (en %) de la corrélation entre les indicateurs de déclaration et de production",
     )
-    # a = [1] * len(my_df["Ratio"]) + [0.1] * len(my_df["Ratio"])
-    # print(len(a))
-    # print(a)
+    
     fig.update_traces(
         marker=dict(
-            sizemin=7,
+            sizemin=0,
             color=px.colors.qualitative.Set1[0],
             opacity=[1]*len(my_df["Ratio"]) + [0.1]*len(my_df["Ratio"]),
 
