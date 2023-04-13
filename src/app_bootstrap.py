@@ -20,7 +20,7 @@ import stacked_barchart
 import linear_graph
 
 import pandas as pd
-
+import numpy as np
 import preprocess
 import clustered_barchart
 
@@ -36,9 +36,11 @@ formes_juridiques = data["Form_juridique"].dropna().unique()
 years = list(data["Year"].dropna().unique())
 years = list(map(lambda x: int(x), years))
 years.sort()
+years.insert(0,"Tout")
 
 modes_transmission = list(data["Mode_transmission"].dropna().unique())
 modes_transmission = list(map(lambda s: s.capitalize(), modes_transmission))
+modes_transmission.insert(0,"Tout")
 
 liste_contexte = []
 for themes in [
@@ -65,6 +67,7 @@ Timeline = (
 )
 regions = list(data["Region"].dropna().unique())
 regions = list(map(lambda s: s.capitalize(), regions))
+regions.insert(0,"Tout")
 Nb_regions = len(regions)
 
 print("Lecture fichier ok")
@@ -90,9 +93,9 @@ data_S = preprocess.sort_by_yr(data_S)
 
 data_whole = preprocess.combine_dfs(data_IC, data_IP, data_S)
 
-bubble_chart_pd = yassine_preprocess.bubble_processing(data_whole)
+# bubble_chart_pd = yassine_preprocess.bubble_processing(data_whole)
 bubble_data = yassine_preprocess.filter_bubble_data(
-    bubble_chart_pd, years[0], modes_transmission[0], formes_juridiques[0], regions[0]
+    data_whole, years[0], modes_transmission[0], formes_juridiques[0], regions[0]
 )
 bubble_chart_fig = bubble_chart.get_plot(bubble_data)
 # Exemple d'application du groupement
@@ -732,7 +735,7 @@ def filter_plot(
         fig = clustered_barchart.draw_clustered_barchart(fig, data_barchart)
     elif tab == "graph-2":
         bubble_data = yassine_preprocess.filter_bubble_data(
-            bubble_chart_pd, year, mode_transmission, forme_juridique, region
+            data_whole, year, mode_transmission, forme_juridique, region
         )
         fig = bubble_chart.get_plot(bubble_data)
     elif tab == "graph-4":
