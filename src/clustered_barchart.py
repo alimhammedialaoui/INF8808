@@ -59,7 +59,4 @@ def draw_clustered_barchart(fig, data_anim):
     fig.update_traces(hovertemplate = hover.clustered_barchart_hover_template(fig.data[1].x))
     fig['layout']['xaxis'].update(autorange = True)
     fig.data[1].name = 'Déclarer sans erreurs'
-    # for data_trace in fig.data:
-    #     print(data_trace)
-    #     #data_trace['hovertemplate'] = hover.map_marker_hover_template(data_trace['name'])
     return fig

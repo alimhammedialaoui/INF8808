@@ -38,6 +38,7 @@ def get_plot(my_df):
         x="Declarer",
         y="Produire",
         size="Ratio",
+        size_max=25,
         text=list(
             map(
                 lambda n: "{:.2f}%".format(round(n, 2) * 100),
