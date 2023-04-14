@@ -27,18 +27,12 @@ def bubble_processing(data_pd,year,region,trans):
         grouped_data = grouped_data[grouped_data['Mode_transmission'] == trans]
     if year != "ALL":
         grouped_data = grouped_data[grouped_data['Year'] == year]
+    
     ############################ Declarer RAS #########################################
- 
-
-    #grouped_data = data_pd[data_pd["Declarer_RAS"] == 1].groupby(['Year', 'Region','Mode_transmission','Form_juridique']).agg({"Produire_IP": ["sum", "count"]})
-    #  grouped_data =  data_filtered[ data_filtered["Declarer_RAS"] == 1].groupby(['Form_juridique']).agg({"Produire_IP": ["sum", "count"]})
-    # # Reset index
-    # data_filtered = data_filtered.reset_index()
-    # # Calculate the ratio
 
     grouped_data["Declarer_RAS/Produit_IP"] = grouped_data[("Produire_IP", "sum")] / grouped_data[("Produire_IP", "count")]
     grouped_data["Declarer_RAS/Produit_IP"]= grouped_data["Declarer_RAS/Produit_IP"].apply(lambda x: 0 if math.isnan(x) else x)
-    # # Drop unnecessary columns
+    # Drop unnecessary columns
     grouped_data = grouped_data.drop(columns=[("Produire_IP", "sum"), ("Produire_IP", "count")])
 
 

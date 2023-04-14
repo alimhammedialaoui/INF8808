@@ -63,7 +63,8 @@ def remove_missing_values(my_df, IC_or_IP):
     print("Lignes avant la suppression des valeurs manquantes : ", len(my_df))
 
     if IC_or_IP == "IC":
-        # Dans ce cas, si nous sommes dans la configuration contribuable, les valeurs NaN sont de vraies données manquantes
+        # Dans ce cas, si nous sommes dans la configuration contribuable, 
+        # les valeurs NaN sont de vraies données manquantes
         my_df = my_df.dropna(
             subset=[
                 "Year",
@@ -80,11 +81,6 @@ def remove_missing_values(my_df, IC_or_IP):
             ]
         )
     elif IC_or_IP == "IP":
-        # Dans ce cas, si nous sommes dans la configuration contribuable, les valeurs NaN sont de vraies données manquantes
-
-        # Pour les particuliers, la partie RAS est majoritairement vide, donc on supprime beaucoup trop de données
-        # Peut-être voir si le revenu à la source est démocratisé ou non au Québec, auquel cas il faudra mettre une règle ou combler par des 0 pour dire
-        # qu'ils ne la déclarent pas (biais)
         my_df = my_df.dropna(
             subset=[
                 "Year",
@@ -101,11 +97,6 @@ def remove_missing_values(my_df, IC_or_IP):
             ]
         )
     elif IC_or_IP == None:
-        # Dans ce cas, si nous sommes dans la configuration contribuable, les valeurs NaN sont de vraies données manquantes
-
-        # Pour les particuliers, la partie RAS est majoritairement vide, donc on supprime beaucoup trop de données
-        # Peut-être voir si le revenu à la source est démocratisé ou non au Québec, auquel cas il faudra mettre une règle ou combler par des 0 pour dire
-        # qu'ils ne la déclarent pas (biais)
         my_df = my_df.dropna(
             subset=[
                 "Year",
@@ -146,7 +137,7 @@ def combine_dfs(df, *dfs):
 
     args:
         df1: The first dataframe to combine
-        df2: The second dataframe, to be appended to the first
+        dfs: The other dataframes, to be appended to the first
     returns:
         The dataframe containing both dataframes provided as arg.
         Each row of the resulting dataframe has a column 'Year'
@@ -161,22 +152,6 @@ def combine_dfs(df, *dfs):
 
 
 def group_and_get_sum_per_obligation(list_of_keys, my_df):
-    """
-    Sums each player's total of number of lines and  its
-    corresponding percentage per act.
-
-    The sum of lines per player per act is in a new
-    column named 'PlayerLine'.
-
-    The percentage of lines per player per act is
-    in a new column named 'PlayerPercent'
-
-    Args:
-        my_df: The pandas dataframe containing the data from the .csv file
-    Returns:
-        The modified pandas dataframe containing the
-        information described above.
-    """
     my_df = my_df.groupby(list_of_keys).agg(
         {
             "Produire_IP": "sum",
@@ -204,22 +179,6 @@ def group_and_get_sum_per_obligation(list_of_keys, my_df):
 
 
 def group_and_get_means_per_obligation(list_of_keys, my_df):
-    """
-    Sums each player's total of number of lines and  its
-    corresponding percentage per act.
-
-    The sum of lines per player per act is in a new
-    column named 'PlayerLine'.
-
-    The percentage of lines per player per act is
-    in a new column named 'PlayerPercent'
-
-    Args:
-        my_df: The pandas dataframe containing the data from the .csv file
-    Returns:
-        The modified pandas dataframe containing the
-        information described above.
-    """
     my_df = my_df.groupby(list_of_keys).agg(
         {
             "Produire_IP": "mean",
