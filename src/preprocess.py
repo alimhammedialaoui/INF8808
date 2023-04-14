@@ -341,6 +341,7 @@ def filter_line_chart_df(my_df,region,obligation,indicateur,transmission):
                         & (my_df['Mode_transmission'] == transmission)]
    else:
        my_df = my_df 
+       
    my_df = my_df.groupby(["Year","Form_juridique"]).agg({'Produire_IP': 'mean', 'Declarer_IP': 'mean',
                                                     'Produire_IC': 'mean', 'Declarer_IC': 'mean',
                                                     'Produire_RAS': 'mean', 'Declarer_RAS': 'mean',
@@ -353,4 +354,5 @@ def filter_line_chart_df(my_df,region,obligation,indicateur,transmission):
       raise(Exception)
    my_df = my_df[["Year", "Form_juridique", column_to_select]]
    my_df = my_df.rename(columns={column_to_select: "Valeurs"})
+   my_df = my_df[my_df['Valeurs'] > 0]
    return my_df

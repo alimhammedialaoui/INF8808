@@ -170,7 +170,7 @@ DASHBOARD = html.Div(
                     n_clicks=0,
                     children=[
                         html.Div(className="fas fa-caret-left mr-1"),
-                        html.Span("Previous"),
+                        html.Span("Retour au menu principal"),
                     ],
                     className="btn btn-primary mb-2",
                 ),
@@ -181,14 +181,14 @@ DASHBOARD = html.Div(
                     style={
                         "font-size": "14px",
                         "height": "4rem",
-                        "line-height": "1.5rem",
+                        "line-height": "1.3rem",
                     },
                     children=[
-                        dcc.Tab(label="Clustered bar chart", value="graph-1"),
-                        dcc.Tab(label="Bubble chart", value="graph-2"),
-                        dcc.Tab(label="Map", value="graph-3"),
-                        dcc.Tab(label="Stacked bar chart", value="graph-4"),
-                        dcc.Tab(label="Line graph", value="graph-5"),
+                        dcc.Tab(label="Analyse des lois selon les obligations fiscales", value="graph-1"),
+                        dcc.Tab(label="Corrélation des lois selon les obligations", value="graph-2"),
+                        dcc.Tab(label="Aperçu géographique", value="graph-3"),
+                        dcc.Tab(label="Analyse du respect des lois selon le type d'entreprise", value="graph-4"),
+                        dcc.Tab(label="Complétion des déclarations par groupe de contribuable", value="graph-5"),
                     ],
                 ),
                 # Zone d'affichage des graphiques
@@ -458,7 +458,7 @@ def filter_template_1(figure_input, **kwargs):
                     html.Div(
                         className="col-sm-3 d-flex flex-column justify-content-center",
                         children=[
-                            html.Div(className="mb-3", children=["Filters"]),
+                            html.Div(className="mb-3", children=["Menu filtrant"]),
                             html.Div(
                                 className="alabaster p-3",
                                 children=[
