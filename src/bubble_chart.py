@@ -47,7 +47,6 @@ def get_plot(my_df):
         ),
         labels={"Declarer": "Déclarer sans erreurs", "Produire": "Produire à temps"},
         title="Analyse (en %) de la corrélation entre les indicateurs de déclaration et de production",
-        size_max=40,
     )
     fig.update_traces(name="Scatter 1")
     # a = [1] * len(my_df["Ratio"]) + [0.1] * len(my_df["Ratio"])
