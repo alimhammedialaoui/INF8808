@@ -38,6 +38,7 @@ years = list(data["Year"].dropna().unique())
 years = list(map(lambda x: int(x), years))
 years.sort()
 years.insert(0,"ALL")
+print(years[-1])
 
 modes_transmission = list(data["Mode_transmission"].dropna().unique())
 modes_transmission = list(map(lambda s: s.capitalize(), modes_transmission))
@@ -61,11 +62,12 @@ Entreprises = len(
 Syndicats = len(data[data["Form_juridique"] == "S"].groupby("Num_contribuable").count())
 
 Effectif = len(data["Num_contribuable"].unique())
+
 Timeline = (
     "Données recensées de "
-    + str(int(data["Year"].dropna().unique()[0]))
+    + str(years[1])
     + " à "
-    + str(int(data["Year"].dropna().unique()[-1]))
+    + str(years[-1])
 )
 regions = list(data["Region"].dropna().unique())
 regions = list(map(lambda s: s.capitalize(), regions))
