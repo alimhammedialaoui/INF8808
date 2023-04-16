@@ -95,13 +95,12 @@ data_S = preprocess.sort_by_yr(data_S)
 
 data_whole = preprocess.combine_dfs(data_IC, data_IP, data_S)
 
-# bubble_chart_pd = yassine_preprocess.bubble_processing(data_whole)
 bubble_data = yassine_preprocess.filter_bubble_data(
     data, years[0], modes_transmission[0], formes_juridiques[0], regions[0]
 )
 bubble_chart_fig = bubble_chart.get_plot(bubble_data)
-# Exemple d'application du groupement
 
+# Exemple d'application du groupement
 data_mean_by_year_and_region = preprocess.group_and_get_means_per_obligation(
     ["Year", "Region"], data_whole
 )
@@ -114,10 +113,6 @@ data_mean_by_year = preprocess.group_and_get_means_per_obligation(
     ["Year", "Form_juridique", "Mode_transmission"], data_whole
 )
 
-# print(data_mean_by_year)
-# import numpy as np
-# print(list(np.concatenate([data_mean_by_year.loc[:, data_mean_by_year.columns != 'Year'].values[0], data_mean_by_year.loc[:, data_mean_by_year.columns != 'Year'].values[0]])))
-
 data_barchart = preprocess.create_dataset_clustered_barchart(
     {
         "Year": years[0],
@@ -126,20 +121,17 @@ data_barchart = preprocess.create_dataset_clustered_barchart(
     },
     data_mean_by_year,
 )
-# print("Data whole Done")
 
-
-# print(data_barchart)
 
 clustered_barchart_fig = clustered_barchart.init_figure()
 clustered_barchart_fig = clustered_barchart.draw_clustered_barchart(
     clustered_barchart_fig, data_barchart
 )
-# fig.update_layout(height=600, width=1200)
 clustered_barchart_fig.update_layout(dragmode=False)
 
 indicateurs = ["TVQ", "RAS", "IC", "IP"]
 obligations = ["Declarer", "Produire"]
+
 # Preprocess data to create the stacked barchart tab
 data_stacked_bchart = preprocess.create_dataset_stacked_barchart(
     data_whole,
@@ -170,7 +162,7 @@ DASHBOARD = html.Div(
                     n_clicks=0,
                     children=[
                         html.Div(className="fas fa-caret-left mr-1"),
-                        html.Span("Previous"),
+                        html.Span("Retour au menu principal"),
                     ],
                     className="btn btn-primary mb-2",
                 ),
@@ -181,14 +173,14 @@ DASHBOARD = html.Div(
                     style={
                         "font-size": "14px",
                         "height": "4rem",
-                        "line-height": "1.5rem",
+                        "line-height": "1.3rem",
                     },
                     children=[
-                        dcc.Tab(label="Clustered bar chart", value="graph-1"),
-                        dcc.Tab(label="Bubble chart", value="graph-2"),
-                        dcc.Tab(label="Map", value="graph-3"),
-                        dcc.Tab(label="Stacked bar chart", value="graph-4"),
-                        dcc.Tab(label="Line graph", value="graph-5"),
+                        dcc.Tab(label="Analyse des lois selon les obligations fiscales", value="graph-1"),
+                        dcc.Tab(label="Corrélation des lois selon les obligations", value="graph-2"),
+                        dcc.Tab(label="Aperçu géographique", value="graph-3"),
+                        dcc.Tab(label="Analyse du respect des lois selon le type d'entreprise", value="graph-4"),
+                        dcc.Tab(label="Complétion des déclarations par groupe de contribuable", value="graph-5"),
                     ],
                 ),
                 # Zone d'affichage des graphiques
@@ -219,7 +211,6 @@ app.layout = html.Div(
                     className="lead",
                     id="homepage",
                     children=[
-                        # html.A(className="btn btn-primary btn-lg",href="#",role="button",children=["Click here"])
                         html.Div(
                             className="row d-flex justify-content-center",
                             children=[
@@ -458,7 +449,7 @@ def filter_template_1(figure_input, **kwargs):
                     html.Div(
                         className="col-sm-3 d-flex flex-column justify-content-center",
                         children=[
-                            html.Div(className="mb-3", children=["Filters"]),
+                            html.Div(className="mb-3", children=["Menu filtrant"]),
                             html.Div(
                                 className="alabaster p-3",
                                 children=[
@@ -755,7 +746,6 @@ def filter_plot(
         )
 
         fig = linear_graph.get_line_chart_figure(line_chart_data)
-    # fig.update_layout(height=600, width=1200)
     fig.update_layout(dragmode=False)
     return fig
 
@@ -765,7 +755,6 @@ def filter_plot(
     [Input("show-dashboard-button", "n_clicks"), Input("previous-button", "n_clicks")],
 )
 def show_plot(n_clicks_1, n_clicks_2):
-    # print("Show ", n_clicks_1, ", Previous ", n_clicks_2)
     if n_clicks_1 == n_clicks_2:
         return "hide", "lead"
     else:

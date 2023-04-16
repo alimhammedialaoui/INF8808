@@ -75,8 +75,7 @@ data_stacked_bchart = preprocess.create_dataset_stacked_barchart(data_whole, {'M
 
 fig = clustered_barchart.init_figure()
 fig = clustered_barchart.draw_clustered_barchart(fig, data_barchart)
-#fig = stacked_barchart.init_figure()
-#fig = stacked_barchart.draw_stacked_barchart(fig, data_stacked_bchart)
+
 fig.update_layout(height=600, width=1200)
 fig.update_layout(dragmode=False)
 
@@ -256,37 +255,3 @@ def display_graph(value):
         return BASTA_HTML
     elif value == 'graph-6':
         return BASTA_HTML
-
-
-# TRASH
-# html.Div(
-#     html.Div(id="homepage_1",
-#              children=[
-#                  # Top left cell
-#                  html.Div(children=[
-#                      html.Span("Présentation du fonctionnement de la visalisation et du contexte dans laquelle elle s'inscrit,\
-#                                Présentation du fonctionnement de la visalisation et du contexte dans laquelle elle s'inscrit\
-#                                Présentation du fonctionnement de la visalisation et du contexte dans laquelle elle s'inscrit\
-#                                Présentation du fonctionnement de la visalisation et du contexte dans laquelle elle s'inscrit",
-#                                className="white-text")],
-#                           className='box blue',
-#                           style={
-#                      'grid-row': '1', 'grid-column': '1'}),
-#                  # Top right cell
-#                  html.Div('Top right', className='box green', style={
-#                      'grid-row': '1', 'grid-column': '2'}),
-#                  # Bottom left cell
-#                  html.Div('Bottom left', className='box beige', style={
-#                      'grid-row': '2', 'grid-column': '1'}),
-#                  # Bottom right cell
-#                 #  html.Div(
-#                 #      children=[
-#                 #          # Button to show the plot
-#                 #          html.Button('Accès au tableau de bord',
-#                 #                      id='show-dashboard-button', style={'width': '100%', 'border-radius': '10px', 'height': '100%'})
-#                 #      ], style={'grid-row': '2', 'grid-column': '2', 'display': 'flex', 'justify-content': 'center'}),
-#              ],
-#              style={'display': 'grid', 'grid-template-columns': '1fr 1fr', 'grid-template-rows': '1fr 1fr 1fr 1fr',
-#                     'justify-content': 'center', 'align-items': 'center', 'height': '100%',
-#                     'grid-gap': '10px', 'padding': '10px'}),
-#     style={'display': 'flex', 'justify-content': 'center', 'align-items': 'center'}),
