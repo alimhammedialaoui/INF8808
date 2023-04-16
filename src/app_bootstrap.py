@@ -96,7 +96,7 @@ data_S = preprocess.sort_by_yr(data_S)
 data_whole = preprocess.combine_dfs(data_IC, data_IP, data_S)
 
 bubble_data = yassine_preprocess.filter_bubble_data(
-    data, years[0], modes_transmission[0], formes_juridiques[0], regions[0]
+    data_whole, years[0], modes_transmission[0], formes_juridiques[0], regions[0]
 )
 print(bubble_data)
 bubble_chart_fig = bubble_chart.get_plot(bubble_data)
