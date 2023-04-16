@@ -387,6 +387,7 @@ def bubble_processing(data_pd,year,region,trans,forme):
         "Declarer_TVQ/Produit_IC":new_data["Declarer_TVQ/Produit_IC"].mean()
     }
     final_dataframe = pd.DataFrame([mean_values])
+    final_dataframe = final_dataframe.replace(np.nan, 0)
     return final_dataframe
 
 
