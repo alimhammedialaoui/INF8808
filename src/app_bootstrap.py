@@ -97,7 +97,7 @@ data_whole = preprocess.combine_dfs(data_IC, data_IP, data_S)
 
 # bubble_chart_pd = yassine_preprocess.bubble_processing(data_whole)
 bubble_data = yassine_preprocess.filter_bubble_data(
-    data_whole, years[0], modes_transmission[0], formes_juridiques[0], regions[0]
+    data, years[0], modes_transmission[0], formes_juridiques[0], regions[0]
 )
 bubble_chart_fig = bubble_chart.get_plot(bubble_data)
 # Exemple d'application du groupement
