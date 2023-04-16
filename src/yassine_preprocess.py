@@ -359,16 +359,17 @@ def bubble_processing(data_pd,year,region,trans,forme):
     new_data["Declarer_TVQ/Produit_IC"] = grouped_data15["Declarer_TVQ/Produit_IC"]
 
     # Filter the grouped data based on selected variable values
-    if region != "Tout":
+    if region != "ALL":
         new_data = new_data[new_data["Region"] == region]
-    if trans != "Tout":
+    if trans != "ALL":
         new_data = new_data[new_data["Mode_transmission"] == trans]
-    if year != "Tout":
+    if year != "ALL":
         new_data = new_data[new_data["Year"] == year]
 
     new_data = new_data[new_data["Form_juridique"] == forme]
 
     mean_values = {
+        "Declarer_RAS/Produit_IP":new_data["Declarer_RAS/Produit_IP"].mean(),
         "Declarer_RAS/Produit_RAS": new_data["Declarer_RAS/Produit_RAS"].mean(),
         "Declarer_RAS/Produit_TVQ":new_data["Declarer_RAS/Produit_TVQ"].mean(),
         "Declarer_RAS/Produit_IC":new_data["Declarer_RAS/Produit_IC"].mean(),

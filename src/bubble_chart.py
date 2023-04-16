@@ -30,7 +30,6 @@ def get_plot(my_df):
     df_temp1.loc[df_temp1["Default"] == "Yes", ["Ratio"]] = 1
     df_temp2.loc[df_temp2["Default"] == "Yes", ["Ratio"]] = 1
     df_temp1 = df_temp1.append({'Declarer': None, 'Produire': None, 'Ratio':1}, ignore_index=True)
-    print(df_temp1)
     fig = px.scatter(
         df_temp1,
         x="Declarer",
