@@ -10,7 +10,6 @@ dico_conjugaison = {
 }
 
 def figure_back(df, quebec_data,color):
-    print(df)
     goal = color.split('_') 
     title = " Analyse de la proportion de " + goal[1] +" " +dico_conjugaison[goal[0]]
 
