@@ -24,6 +24,7 @@ import numpy as np
 import preprocess
 import clustered_barchart
 import stacked_barchart
+import map as map_qc
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 
@@ -32,13 +33,17 @@ app.title = "Projet | INF8808"
 
 data = pd.read_csv("assets/dataset.csv", delimiter=";", encoding="latin-1")
 
+#####################################################################################
+with open('assets/quebec_regions.geojson', encoding='utf-8') as data_file:
+    quebec_map_data = json.load(data_file)
+#####################################################################################
+
 formes_juridiques = data["Form_juridique"].dropna().unique()
 
 years = list(data["Year"].dropna().unique())
 years = list(map(lambda x: int(x), years))
 years.sort()
 years.insert(0,"ALL")
-print(years[-1])
 
 modes_transmission = list(data["Mode_transmission"].dropna().unique())
 modes_transmission = list(map(lambda s: s.capitalize(), modes_transmission))
@@ -153,6 +158,27 @@ line_chart_data = preprocess.filter_line_chart_df(
 )
 
 line_chart_fig = linear_graph.get_line_chart_figure(line_chart_data)
+
+regions_df = data_whole.Region.dropna().unique()
+map_regions = []
+for i in quebec_map_data['features']:
+    map_regions.append(i['properties']['res_nm_reg'])
+
+dico_regions = preprocess.uniform_regions(regions_df,map_regions)
+
+print(dico_regions)
+
+map_data ,color= preprocess.map_df(
+    data_whole,
+    dico_regions,
+    modes_transmission[0],
+    indicateurs[0],
+    formes_juridiques[0],
+    obligations[0],
+    years[0]
+)
+map_fig = map_qc.figure_back(map_data,quebec_map_data,color)
+
 
 DASHBOARD = html.Div(
     className="pb-5 pl-5 pr-5 pt-0",
@@ -647,6 +673,9 @@ PIERRE_FIG = stacked_barchart_fig
 
 UGO_FIG = line_chart_fig
 
+PATRICK_FIG = map_fig
+
+
 BASTA_HTML = filter_template_1(
     BASTA_FIG,
     mode="",
@@ -667,6 +696,15 @@ YASSINE_HTML = filter_template_1(
     obligation="none",
     indicateur="none",
 )
+
+PATRICK_HTML = filter_template_1(PATRICK_FIG,
+                                  forme="",
+                                  indicateur="",
+                                  mode="none",
+                                  obligation="",
+                                  region="none",
+                                  trans="",
+                                  year="")
 
 PIERRE_HTML = filter_template_1(
     PIERRE_FIG,
@@ -734,6 +772,11 @@ def filter_plot(
             data_whole, year, mode_transmission, forme_juridique, region
         )
         fig = bubble_chart.get_plot(bubble_data)
+        
+    elif tab == "graph-3":
+        map_data,color = preprocess.map_df(data_whole,dico_regions,mode_transmission,indicateur,forme_juridique,obligation,year)
+        fig= map_qc.figure_back(map_data,quebec_map_data,color)
+        
     elif tab == "graph-4":
         stacked_data = preprocess.create_dataset_stacked_barchart(
             data_whole,

@@ -36,3 +36,4 @@ tomli==2.0.1
 typing_extensions==4.5.0
 Werkzeug==2.2.2
 zipp==3.10.0
+Levenshtein==0.20.9

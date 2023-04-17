@@ -315,3 +315,35 @@ def filter_line_chart_df(my_df,region,obligation,indicateur,transmission):
    my_df = my_df.rename(columns={column_to_select: "Valeurs"})
    my_df = my_df[my_df['Valeurs'] > 0]
    return my_df
+
+from Levenshtein import distance
+
+def uniform_regions(regions_df,quebec_map_regions):
+    dico_regions = {}
+    for region in regions_df:
+        #print(region)
+        key = region
+        min = 50
+        key_region = None
+        for region_map in quebec_map_regions:
+            #print(region , region_map)
+            d = distance(region,region_map)
+            if(d<min):
+                min = d
+                key_region = region_map
+        dico_regions[key] = key_region 
+    return dico_regions
+
+
+
+def map_df(df,dico_regions,transmission,indicateur,forme_jur,obligation,year):
+    df = df[(df['Year']== year) & (df['Mode_transmission']==transmission) & (df['Form_juridique'] == forme_jur)]
+    if obligation == 'Declarer':
+        column_to_select = "Declarer_" + indicateur
+    elif obligation == 'Produire':
+        column_to_select = "Produire_" + indicateur
+    df = df[['Region',column_to_select]]
+    df = df.replace({"Region": dico_regions})
+    df = df.groupby('Region').mean()
+    df = df.reset_index()
+    return df, column_to_select
