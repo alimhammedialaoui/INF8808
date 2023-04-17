@@ -337,7 +337,14 @@ def uniform_regions(regions_df,quebec_map_regions):
 
 
 def map_df(df,dico_regions,transmission,indicateur,forme_jur,obligation,year):
-    df = df[(df['Year']== year) & (df['Mode_transmission']==transmission) & (df['Form_juridique'] == forme_jur)]
+    if year != 'ALL' and transmission !='ALL':
+        df = df[(df['Year']== year) & (df['Mode_transmission']==transmission) & (df['Form_juridique'] == forme_jur)]
+    elif year == 'ALL' and transmission !='ALL':
+        df = df[(df['Mode_transmission']==transmission) & (df['Form_juridique'] == forme_jur)]
+    elif year != 'ALL' and transmission =='ALL':
+        df = df[(df['Year']== year) & (df['Form_juridique'] == forme_jur)]
+    else :
+        df = df[(df['Form_juridique'] == forme_jur)]
     if obligation == 'Declarer':
         column_to_select = "Declarer_" + indicateur
     elif obligation == 'Produire':
@@ -346,4 +353,5 @@ def map_df(df,dico_regions,transmission,indicateur,forme_jur,obligation,year):
     df = df.replace({"Region": dico_regions})
     df = df.groupby('Region').mean()
     df = df.reset_index()
+    df[column_to_select] = round(df[column_to_select],4)*100
     return df, column_to_select

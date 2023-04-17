@@ -814,7 +814,7 @@ def display_graph(value):
     elif value == "graph-2":
         return YASSINE_HTML
     elif value == "graph-3":
-        return BASTA_HTML
+        return PATRICK_HTML
     elif value == "graph-4":
         return PIERRE_HTML
     elif value == "graph-5":
