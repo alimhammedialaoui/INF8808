@@ -38,7 +38,13 @@ def stacked_barchart_hover_template():
     label2 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Taux de respect : " '</span>'
     value2 = '<span style="font-family:Oswald">' + ' %{y:.2f} % <br>' 
 
-    return label1 + value1 + label2 + value2 + '<extra></extra>'
+    label3 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Taux Maximum Possible : " '</span>'
+    value3 = '<span style="font-family:Oswald">' + ' %{customdata[0]:.2f} % <br>' 
+
+    label4 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Nombre total d'entreprises : " '</span>'
+    value4 = '<span style="font-family:Oswald">' + ' %{customdata[1]:,} <br>' 
+
+    return label1 + value1 + label2 + value2 + label3 + value3 + label4 + value4 + '<extra></extra>'
 
 def bubblechart_hover_template():
     label1 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Règle : " '</span>'

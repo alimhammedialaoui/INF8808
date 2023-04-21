@@ -273,7 +273,7 @@ def create_dataset_clustered_barchart(criteres, dataset, radio_fusion=False):
     ]
 
     return formated_dataset
-
+'''
 def create_dataset_stacked_barchart(dataset, criteres, obligation='Declarer', indicateur='TVQ'):
     dataset = dataset[dataset['Form_juridique'] == 'C'] # Only keep rows corresponding to corporations
     for key, value in criteres.items():
@@ -287,6 +287,35 @@ def create_dataset_stacked_barchart(dataset, criteres, obligation='Declarer', in
     nmb_of_companies = dataset.groupby(['Year']).agg({column_to_select: 'size'}).add_suffix('_Tot')
     dataset = nmb_of_ones.join(nmb_of_companies, on="Year")
     dataset["Valeurs"] = dataset[column_to_select] / dataset[column_to_select + "_Tot"]
+    dataset["Tot"] = dataset[column_to_select + "_Tot"]
+    print(dataset)
+    return dataset
+'''
+
+def create_dataset_stacked_barchart(dataset, criteres, obligation='Declarer', indicateur='TVQ'):
+    dataset = dataset[dataset['Form_juridique'] == 'C'] # Only keep rows corresponding to corporations
+    for key, value in criteres.items():
+        if value != 'ALL':
+            dataset = dataset[dataset[key] == value]
+
+    #dataset2 = dataset.copy()
+    column_to_select = obligation + "_" + indicateur
+
+    nmb_of_ones = dataset.groupby(['Year', 'Taille']).agg({column_to_select: 'sum'}).reset_index()
+    nmb_of_companies = dataset.groupby(['Year']).agg({column_to_select: 'size'}).add_suffix('_Tot')
+    num_companies_by_size = dataset.groupby(['Year', 'Taille']).agg({column_to_select: 'size'})
+    
+    num_companies_by_size["tot_by_size"] = num_companies_by_size[column_to_select]
+
+    num_companies_by_size = num_companies_by_size.drop(columns=[column_to_select]).reset_index()
+    #print(num_companies_by_size)
+    dataset = nmb_of_ones.join(nmb_of_companies, on=["Year"])
+    
+    dataset["Tot_par_taille"] = num_companies_by_size["tot_by_size"] / dataset[column_to_select + "_Tot"] * 100
+    dataset["Valeurs"] = dataset[column_to_select] / dataset[column_to_select + "_Tot"] * 100
+    dataset["Tot"] = dataset[column_to_select + "_Tot"]
+    dataset = dataset.drop(columns=[column_to_select, column_to_select + '_Tot'])
+    #print(dataset)
 
     return dataset
 

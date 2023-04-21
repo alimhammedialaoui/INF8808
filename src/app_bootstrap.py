@@ -13,11 +13,13 @@ import dash
 import dash_html_components as html
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
+import dash_daq as daq
 from dash.dependencies import Input, Output, State
 import yassine_preprocess
 import bubble_chart
 import stacked_barchart
 import linear_graph
+
 
 import pandas as pd
 import numpy as np
@@ -49,6 +51,7 @@ modes_transmission = list(data["Mode_transmission"].dropna().unique())
 modes_transmission = list(map(lambda s: s.capitalize(), modes_transmission))
 modes_transmission.insert(0,"ALL")
 
+scales=["Linéaire", "Log"]
 
 liste_contexte = []
 for themes in [
@@ -149,7 +152,7 @@ data_stacked_bchart = preprocess.create_dataset_stacked_barchart(
 )
 stacked_barchart_fig = stacked_barchart.init_figure()
 stacked_barchart_fig = stacked_barchart.draw_stacked_barchart(
-    stacked_barchart_fig, data_stacked_bchart
+    stacked_barchart_fig, data_stacked_bchart, scales[0]
 )
 
 # Preprocess data to create the line chart figure
@@ -645,6 +648,20 @@ def filter_template_1(figure_input, **kwargs):
                                             )
                                         ],
                                     ),
+                                    html.Div(
+                                        children=[
+                                            daq.BooleanSwitch(
+                                                id="boolean-switch",
+                                                on=False,
+                                                label='Log Scale',
+                                                style={
+                                                    "whiteSpace": "nowrap",
+                                                    "fontSize": "14px",
+                                                    "display": kwargs["scale_mode"],
+                                                },
+                                            )
+                                        ],
+                                    ),
                                 ],
                             ),
                         ],
@@ -685,6 +702,7 @@ BASTA_HTML = filter_template_1(
     region="none",
     obligation="none",
     indicateur="none",
+    scale_mode = 'none',
 )
 YASSINE_HTML = filter_template_1(
     YASSINE_FIG,
@@ -695,6 +713,7 @@ YASSINE_HTML = filter_template_1(
     region="",
     obligation="none",
     indicateur="none",
+    scale_mode = 'none',
 )
 
 PATRICK_HTML = filter_template_1(PATRICK_FIG,
@@ -704,7 +723,8 @@ PATRICK_HTML = filter_template_1(PATRICK_FIG,
                                   obligation="",
                                   region="none",
                                   trans="",
-                                  year="")
+                                  year="",
+                                  scale_mode = 'none',)
 
 PIERRE_HTML = filter_template_1(
     PIERRE_FIG,
@@ -715,6 +735,7 @@ PIERRE_HTML = filter_template_1(
     region="",
     obligation="",
     indicateur="",
+    scale_mode = '',
 )
 
 UGO_HTML = filter_template_1(
@@ -726,6 +747,7 @@ UGO_HTML = filter_template_1(
     region="",
     obligation="",
     indicateur="",
+    scale_mode = 'none',
 )
 
 
@@ -740,10 +762,11 @@ UGO_HTML = filter_template_1(
         Input("radio-items_5", "value"),
         Input("radio-items_6", "value"),
         Input("radio-items_7", "value"),
+        Input("boolean-switch", "on"),
     ],
 )
 def filter_plot(
-    tab, mode, year, forme_juridique, mode_transmission, region, indicateur, obligation
+    tab, mode, year, forme_juridique, mode_transmission, region, indicateur, obligation, scale_mode
 ):
     """
     Updates the application after the filter has changed
@@ -785,7 +808,7 @@ def filter_plot(
             indicateur=indicateur,
         )
         fig = stacked_barchart.init_figure()
-        fig = stacked_barchart.draw_stacked_barchart(stacked_barchart_fig, stacked_data)
+        fig = stacked_barchart.draw_stacked_barchart(stacked_barchart_fig, stacked_data, scale_mode)
     elif tab=="graph-5":
         line_chart_data = preprocess.filter_line_chart_df(
             data_whole, region, obligation, indicateur, mode_transmission
