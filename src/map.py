@@ -10,6 +10,16 @@ dico_conjugaison = {
 }
 
 def figure_back(df, quebec_data,color):
+    """
+    Generates the map.
+
+    Args:
+        df: The dataframe to display
+        quebec_data: The GeoJSON data
+    Returns:
+        The generated map
+    """
+    
     goal = color.split('_') 
     title = " Analyse de la proportion de " + goal[1] +" " +dico_conjugaison[goal[0]]
 

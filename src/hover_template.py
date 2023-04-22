@@ -1,18 +1,4 @@
 
-dictionary = {'IC':'Impôt corporatif',
-              'IP':'Impôt au particulier',
-              'TVQ':'Taxe de vente du Québec',
-              'RAS':'Retenues à la source',
-              'IC_P':'Impôt corporatif',
-              'IP_P':'Impôt au particulier',
-              'TVQ_P':'Taxe de vente du Québec',
-              'RAS_P':'Retenues à la source',
-              'IC_C':'Impôt corporatif',
-              'IP_C':'Impôt au particulier',
-              'TVQ_C':'Taxe de vente du Québec',
-              'RAS_C':'Retenues à la source',
-            }
-
 def clustered_barchart_hover_template(laws):
     '''
         Sets the template for the hover tooltips on the neighborhoods.

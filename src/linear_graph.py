@@ -2,6 +2,14 @@ import plotly.express as px
 import hover_template as hover
 
 def get_line_chart_figure(my_df):
+    """
+    Generates the linegraph.
+
+    Args:
+        my_df: The dataframe to display
+    Returns:
+        The generated figure
+    """
     fig = px.line(my_df,
                   x="Year", 
                   y=round(my_df["Valeurs"]*100,2), 

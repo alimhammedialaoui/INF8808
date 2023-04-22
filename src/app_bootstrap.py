@@ -15,7 +15,6 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_daq as daq
 from dash.dependencies import Input, Output, State
-import yassine_preprocess
 import bubble_chart
 import stacked_barchart
 import linear_graph
@@ -35,10 +34,8 @@ app.title = "Projet | INF8808"
 
 data = pd.read_csv("assets/dataset.csv", delimiter=";", encoding="latin-1")
 
-#####################################################################################
 with open('assets/quebec_regions.geojson', encoding='utf-8') as data_file:
     quebec_map_data = json.load(data_file)
-#####################################################################################
 
 formes_juridiques = data["Form_juridique"].dropna().unique()
 
@@ -105,10 +102,9 @@ data_S = preprocess.sort_by_yr(data_S)
 
 data_whole = preprocess.combine_dfs(data_IC, data_IP, data_S)
 
-bubble_data = yassine_preprocess.filter_bubble_data(
+bubble_data = preprocess.filter_bubble_data(
     data_whole, years[0], modes_transmission[0], formes_juridiques[0], regions[0]
 )
-print(bubble_data)
 bubble_chart_fig = bubble_chart.get_plot(bubble_data)
 
 # Exemple d'application du groupement
@@ -168,8 +164,6 @@ for i in quebec_map_data['features']:
     map_regions.append(i['properties']['res_nm_reg'])
 
 dico_regions = preprocess.uniform_regions(regions_df,map_regions)
-
-print(dico_regions)
 
 map_data ,color= preprocess.map_df(
     data_whole,
@@ -791,7 +785,7 @@ def filter_plot(
         )
         fig = clustered_barchart.draw_clustered_barchart(fig, data_barchart)
     elif tab == "graph-2":
-        bubble_data = yassine_preprocess.filter_bubble_data(
+        bubble_data = preprocess.filter_bubble_data(
             data_whole, year, mode_transmission, forme_juridique, region
         )
         fig = bubble_chart.get_plot(bubble_data)

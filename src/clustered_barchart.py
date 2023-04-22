@@ -34,8 +34,7 @@ def draw_clustered_barchart(fig, data_anim):
 
         Arg:
             fig: The figure comprising the bar chart
-            data: The data to be displayed
-            mode: Whether to display the count or percent data.
+            data_anim: The data to be displayed
         Returns:
             fig: The figure comprising the drawn bar chart
     '''

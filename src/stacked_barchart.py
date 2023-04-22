@@ -42,41 +42,15 @@ def draw_stacked_barchart(fig, data, scale_mode):
     fig = go.Figure(fig)  # conversion back to Graph Object
     fig.data = []
     range_y=[0,100]
-    
-    """ fig = px.bar(data,
-                 x ="Year",
-                 y = "Valeurs",
-                 range_y=range_y,
-                 color="Taille",
-                 labels={
-                        "Valeurs": "% de respect de l'obligation",
-                        "Year": "Années",
-                        'Taille': "Taille de l'entreprise"
-                    },
-                 title = "Évolution sur la complétion des déclarations par type d'entreprise",
-                 color_discrete_sequence=px.colors.qualitative.Set1,
-                 custom_data=["Tot_par_taille", "Tot"],
-                )
-    fig.update_layout(title_x = 0.5) """
 
     tailles = data["Taille"].unique()
-    #print(list(tailles))
+
     for i, taille in enumerate(tailles):
         curr_data=data[data["Taille"] == taille]
         color = px.colors.qualitative.Set1[i]
         traces = create_bar_traces(curr_data, color, taille)
         fig.add_traces(traces[0])
         fig.add_traces(traces[1])
-    """ data_grande= data[data["Taille"] == "Grande"]
-    data_moyenne = data[data["Taille"] == "Moyenne"]
-    data_petite= data[data["Taille"] == "Petite"]
-    trace_grande = go.Bar(x=data_grande["Year"], y=data_grande["Tot_par_taille"])
-    trace_moyenne = go.Bar()
-    trace_petite = go.Bar(x=data_petite["Year"], 
-                          y=data_petite["Tot_par_taille"]-data_petite["Valeurs"], 
-                          marker_color=px.colors.qualitative.Set1[2], 
-                          opacity=0.4, 
-                          customdata=data_petite[["Tot_par_taille", "Tot"]]) """
 
     fig.update_yaxes(type='linear')
     if scale_mode:
