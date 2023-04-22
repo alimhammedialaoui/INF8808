@@ -205,7 +205,7 @@ DASHBOARD = html.Div(
                         dcc.Tab(label="Analyse des lois selon les obligations fiscales", value="graph-1"),
                         dcc.Tab(label="Corrélation des lois selon les obligations", value="graph-2"),
                         dcc.Tab(label="Aperçu géographique", value="graph-3"),
-                        dcc.Tab(label="Analyse du respect des lois selon le type d'entreprise", value="graph-4"),
+                        dcc.Tab(label="Analyse du respect des lois selon la taille de l'entreprise", value="graph-4"),
                         dcc.Tab(label="Complétion des déclarations par groupe de contribuable", value="graph-5"),
                     ],
                 ),

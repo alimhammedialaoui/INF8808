@@ -59,7 +59,8 @@ def draw_stacked_barchart(fig, data, scale_mode):
 
     fig.update_layout(yaxis_range=range_y)
     fig.update_layout(legend_title_text="Taille d'entreprise et respect")
-
+    fig.update_layout(title="Analyse du respect des lois selon la taille de l'entreprise")
+    fig.update_layout(title_x = 0.5)
     fig.update_traces(hovertemplate = hover.stacked_barchart_hover_template())
 
     return fig

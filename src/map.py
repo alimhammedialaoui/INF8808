@@ -22,7 +22,6 @@ def figure_back(df, quebec_data,color):
     
     goal = color.split('_') 
     title = " Analyse de la proportion de " + goal[1] +" " +dico_conjugaison[goal[0]]
-
     fig = px.choropleth_mapbox(df, 
                             geojson=quebec_data, color=color,
                             locations="Region", featureidkey="properties.res_nm_reg",
@@ -30,6 +29,7 @@ def figure_back(df, quebec_data,color):
                             mapbox_style="carto-positron", zoom=2,
                             title = title,
                             opacity = 0.5,
+                            color_continuous_scale = "rdbu",
                             labels={color: "Proportion (%) de " +goal[1] +" " +dico_conjugaison[goal[0]] })
     fig.update_geos(fitbounds="locations", visible=False)
     fig.update_layout(title_x = 0.5)
