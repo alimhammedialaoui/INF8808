@@ -19,7 +19,10 @@ def figure_back(df, quebec_data,color):
     Returns:
         The generated map
     """
-    
+    print(df.iloc[:,1])
+    print(min(df.iloc[:,1]))
+    print(max(df.iloc[:,1]))
+
     goal = color.split('_') 
     title = " Analyse de la proportion de " + goal[1] +" " +dico_conjugaison[goal[0]]
     fig = px.choropleth_mapbox(df, 
@@ -29,7 +32,8 @@ def figure_back(df, quebec_data,color):
                             mapbox_style="carto-positron", zoom=2,
                             title = title,
                             opacity = 0.5,
-                            color_continuous_scale = "rdbu",
+                            color_continuous_scale = "Reds",
+                            range_color =[max(0,min(df.iloc[:,1])-2),min(max(df.iloc[:,1])+2,100)],
                             labels={color: "Proportion (%) de " +goal[1] +" " +dico_conjugaison[goal[0]] })
     fig.update_geos(fitbounds="locations", visible=False)
     fig.update_layout(title_x = 0.5)
