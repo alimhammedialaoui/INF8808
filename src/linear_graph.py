@@ -13,7 +13,7 @@ def get_line_chart_figure(my_df):
     fig = px.line(my_df,
                   x="Year", 
                   y=round(my_df["Valeurs"]*100,2), 
-                  range_y=[0,100], 
+                  range_y=[0,100],
                   labels={
                         "Year": "Années",
                         "C": "Entreprises",
@@ -34,6 +34,14 @@ def get_line_chart_figure(my_df):
         value.name = 'Particulier'
       else:
         value.name = 'Syndicat'
-
+        
+    fig.update_layout(xaxis_title='')
+    fig.add_annotation(x=2013.80, y=-0.17, 
+                       xref="x", 
+                       yref="paper", 
+                       showarrow=False, 
+                       text="Années", 
+                       font=dict(size=14), 
+                       textangle=0)
     return fig
 

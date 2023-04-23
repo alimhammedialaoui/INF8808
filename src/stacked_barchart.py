@@ -60,9 +60,20 @@ def draw_stacked_barchart(fig, data, scale_mode):
     fig.update_layout(yaxis_range=range_y)
     fig.update_layout(legend_title_text="Taille d'entreprise et respect")
     fig.update_layout(title="Analyse du respect des lois selon la taille de l'entreprise")
+    fig.update_layout(yaxis_title="% de respect de l'obligation",
+                      xaxis_title="Années")
+
     fig.update_layout(title_x = 0.5)
     fig.update_traces(hovertemplate = hover.stacked_barchart_hover_template())
 
+    fig.update_layout(xaxis_title='')
+    fig.add_annotation(x=2013.80, y=-0.17, 
+                       xref="x", 
+                       yref="paper", 
+                       showarrow=False, 
+                       text="Années", 
+                       font=dict(size=14), 
+                       textangle=0)
     return fig
 
 def create_bar_traces(data, color, name):

@@ -76,6 +76,15 @@ def get_plot(my_df):
 
     fig.update_traces(hovertemplate=hover.bubblechart_hover_template())
     fig.data = [fig.data[1], fig.data[0]]
+    
+    fig.update_layout(xaxis_title='')
+    fig.add_annotation(x=-0.20, y=-0.17, 
+                       xref="x", 
+                       yref="paper", 
+                       showarrow=False, 
+                       text="Déclarer sans erreurs", 
+                       font=dict(size=14), 
+                       textangle=0)
 
 
     fig.update_layout(
@@ -90,5 +99,15 @@ def get_plot(my_df):
         width=800,  # Set the width of the chart to 800 pixels
         height=600,  # Set the height of the chart to 600 pixels
     )
+
+    fig.update_xaxes(labelalias=dict(Declarer_RAS="Déclarer RAS", 
+                                     Declarer_IP="Déclarer IP",
+                                     Declarer_TVQ="Déclarer TVQ",
+                                     Declarer_IC="Déclarer IC",
+                                     ))
+    fig.update_yaxes(labelalias=dict(Produit_IC="Produire IC",
+                                    Produit_IP="Produire IP",
+                                    Produit_TVQ="Produire TVQ",
+                                    Produit_RAS="Produire RAS"))
 
     return fig

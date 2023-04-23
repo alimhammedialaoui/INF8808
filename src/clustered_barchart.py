@@ -56,6 +56,14 @@ def draw_clustered_barchart(fig, data_anim):
                 )
     fig.update_layout(title_x = 0.5, yaxis_title="% de respect de l'obligation")
     fig.update_traces(hovertemplate = hover.clustered_barchart_hover_template(fig.data[1].x))
+    fig.update_layout(xaxis_title='')
+    fig.add_annotation(x=-0.20, y=-0.17, 
+                       xref="x", 
+                       yref="paper", 
+                       showarrow=False, 
+                       text="Lois fiscales", 
+                       font=dict(size=14), 
+                       textangle=0)
     fig['layout']['xaxis'].update(autorange = True)
     fig.data[1].name = 'Déclarer sans erreurs'
     return fig

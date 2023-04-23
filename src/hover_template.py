@@ -34,7 +34,7 @@ def stacked_barchart_hover_template():
 
 def bubblechart_hover_template():
     label1 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Règle : " '</span>'
-    value1 = '<span style="font-family:Oswald">' + '%{x}' + ' = ' + '%{y}' + '<br>' 
+    value1 = '<span style="font-family:Oswald">' + '%{x}' + ' à temps implique ' + '%{y}' + ' sans erreurs' + '<br>' 
     
     label2 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Proportion : " '</span>'
     value2 = '<span style="font-family:Oswald">' + '%{text}' + '<br>' 
