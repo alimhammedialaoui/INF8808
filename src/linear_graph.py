@@ -43,5 +43,15 @@ def get_line_chart_figure(my_df):
                        text="Années", 
                        font=dict(size=14), 
                        textangle=0)
+    
+    # fig.update_layout(yaxis_title='')
+    # fig.add_annotation(x=-0.2, y=50, 
+    #                    xref="paper", 
+    #                    yref="y", 
+    #                    showarrow=False, 
+    #                    text="% de respect", 
+    #                    font=dict(size=14), 
+    #                    textangle=0)
+    
     return fig
 
