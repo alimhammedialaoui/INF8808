@@ -109,5 +109,17 @@ def get_plot(my_df):
                                     Produit_IP="Produire IP",
                                     Produit_TVQ="Produire TVQ",
                                     Produit_RAS="Produire RAS"))
+    
+    fig.update_layout(yaxis_title='')
+    fig.add_annotation(x=-0.45, y=0.5, 
+                       xref="paper", 
+                       yref="paper", 
+                       showarrow=False, 
+                       text="Produire à temps", 
+                       font=dict(size=14), 
+                       textangle=0,
+                       standoff = 50
+                       )
+    fig.update_yaxes(title=dict(standoff = 120))
 
     return fig

@@ -11,7 +11,7 @@ def clustered_barchart_hover_template(laws):
     label1 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Loi : " '</span>'
     value1 = '<span style="font-family:Oswald">' + '%{x}' + '<br>' 
     
-    label2 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Taux de respect : " '</span>'
+    label2 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Taux de respect de l'obligation : " '</span>'
     value2 = '<span style="font-family:Oswald">' + ' %{y:.2f} % <br>' 
     
     return label1 + value1 + label2 + value2 + '<extra></extra>'
@@ -21,10 +21,10 @@ def stacked_barchart_hover_template():
     label1 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Année : " '</span>'
     value1 = '<span style="font-family:Oswald">' + '%{x}' + '<br>' 
 
-    label2 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Taux de respect : " '</span>'
+    label2 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Taux de respect de l'obligation : " '</span>'
     value2 = '<span style="font-family:Oswald">' + ' %{y:.2f} % <br>' 
 
-    label3 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Taux Maximum Possible : " '</span>'
+    label3 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Taux maximum possible : " '</span>'
     value3 = '<span style="font-family:Oswald">' + ' %{customdata[0]:.2f} % <br>' 
 
     label4 = '<span style="font-family:' + "'Oswald'" + '; font-weight:bold">' + " Nombre total d'entreprises : " '</span>'
