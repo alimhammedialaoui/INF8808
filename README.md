@@ -17,3 +17,6 @@ Par la suite ce sont 5 tableaux de bord avec leurs objectifs distincts explicit�
 - Complétion des déclarations par groupe de contribuable
 
 Vous pouvez naviguer entre les visualisations en cliquant sur le nom des visualisations dans les encadrés gris. À gauche de chaque visualisation se trouve un menu permettant d'ajuster la visualisation selon vos envies et ainsi présenter une information plus précise. 
+
+
+#### Projet placé sous les termes de la licence MIT
